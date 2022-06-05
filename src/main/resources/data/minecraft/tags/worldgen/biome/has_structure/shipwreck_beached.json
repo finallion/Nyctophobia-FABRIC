@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:is_beach",
+    "graveyard_biomes:ancient_dead_coral_reef"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "graveyard_biomes",
+  "version": "1.1",
+
+  "name": "The Graveyard Biomes",
+  "description": "An independent spooky biome expansion mod for The Graveyard (FABRIC).",
+  "authors": [
+    "Finallion"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": "https://github.com/finallion/The_Graveyard_-FABRIC-"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/graveyard_biomes/graveyard_logo.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.finallion.graveyard_biomes.TheGraveyardBiomes"
+    ],
+    "client": [],
+    "terrablender": [
+      "com.finallion.graveyard_biomes.TheGraveyardBiomes"
+    ]
+  },
+  "mixins": [
+    "graveyard_biomes.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.12.12",
+    "fabric": "*",
+    "minecraft": "1.18.x",
+    "terrablender": ">=1.1.0.91",
+    "java": ">=17"
+  }
+}
