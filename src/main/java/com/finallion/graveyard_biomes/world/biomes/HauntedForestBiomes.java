@@ -46,7 +46,6 @@ public class HauntedForestBiomes {
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
-                .category(Biome.Category.FOREST)
                 .temperature(0.6F)
                 .downfall(0.9F)
                 .effects((new BiomeEffects.Builder())
@@ -87,7 +86,6 @@ public class HauntedForestBiomes {
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
-                .category(Biome.Category.FOREST)
                 .temperature(0.6F)
                 .downfall(0.9F)
                 .effects((new BiomeEffects.Builder())
@@ -130,7 +128,6 @@ public class HauntedForestBiomes {
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
-                .category(Biome.Category.FOREST)
                 .temperature(0.4F)
                 .downfall(0.4F)
                 .effects((new BiomeEffects.Builder())

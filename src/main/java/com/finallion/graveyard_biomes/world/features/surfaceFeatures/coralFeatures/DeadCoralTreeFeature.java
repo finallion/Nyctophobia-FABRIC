@@ -6,13 +6,13 @@ import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 public class DeadCoralTreeFeature extends DeadCoralFeature {
     public DeadCoralTreeFeature(Codec<DefaultFeatureConfig> codec) {
@@ -34,7 +34,7 @@ public class DeadCoralTreeFeature extends DeadCoralFeature {
         BlockPos j = mutable.toImmutable();
         int k = random.nextInt(3) + 2;
         List<Direction> list = Lists.newArrayList(Direction.Type.HORIZONTAL);
-        Collections.shuffle(list, random);
+        Collections.shuffle(list, new java.util.Random());
         List<Direction> list2 = list.subList(0, k);
         Iterator var11 = list2.iterator();
 

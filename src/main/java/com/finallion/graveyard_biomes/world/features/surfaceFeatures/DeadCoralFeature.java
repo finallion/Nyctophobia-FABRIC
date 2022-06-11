@@ -10,6 +10,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.StructureWorldAccess;
@@ -20,7 +21,6 @@ import net.minecraft.world.gen.feature.util.FeatureContext;
 
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.Random;
 
 public abstract class DeadCoralFeature extends Feature<DefaultFeatureConfig> {
     public DeadCoralFeature(Codec<DefaultFeatureConfig> codec) {
@@ -28,7 +28,7 @@ public abstract class DeadCoralFeature extends Feature<DefaultFeatureConfig> {
     }
 
     public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
-        Random random = context.getRandom();
+        net.minecraft.util.math.random.Random random = context.getRandom();
         StructureWorldAccess structureWorldAccess = context.getWorld();
         BlockPos blockPos = context.getOrigin();
 
@@ -38,7 +38,7 @@ public abstract class DeadCoralFeature extends Feature<DefaultFeatureConfig> {
         return optional.isEmpty() ? false : this.generateCoral(structureWorldAccess, random, blockPos, ((Block)optional.get()).getDefaultState());
     }
 
-    protected abstract boolean generateCoral(WorldAccess world, Random random, BlockPos pos, BlockState state);
+    protected abstract boolean generateCoral(WorldAccess world, net.minecraft.util.math.random.Random random, BlockPos pos, BlockState state);
 
     protected boolean generateCoralPiece(WorldAccess world, Random random, BlockPos pos, BlockState state) {
         BlockPos blockPos = pos.up();

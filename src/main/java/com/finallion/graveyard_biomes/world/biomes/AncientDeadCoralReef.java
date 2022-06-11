@@ -46,7 +46,6 @@ public class AncientDeadCoralReef {
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
-                .category(Biome.Category.BEACH)
                 .temperature(0.5F)
                 .downfall(0.5F)
                 .effects((new BiomeEffects.Builder())

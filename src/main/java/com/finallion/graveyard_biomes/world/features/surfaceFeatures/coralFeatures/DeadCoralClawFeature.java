@@ -7,13 +7,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 public class DeadCoralClawFeature extends DeadCoralFeature {
     public DeadCoralClawFeature(Codec<DefaultFeatureConfig> codec) {
@@ -24,10 +24,10 @@ public class DeadCoralClawFeature extends DeadCoralFeature {
         if (!this.generateCoralPiece(world, random, pos, state)) {
             return false;
         } else {
-            Direction direction = Direction.Type.HORIZONTAL.random(random);
+            Direction direction = Direction.Type.HORIZONTAL.random(world.getRandom());
             int i = random.nextInt(2) + 2;
             List<Direction> list = Lists.newArrayList(new Direction[]{direction, direction.rotateYClockwise(), direction.rotateYCounterclockwise()});
-            Collections.shuffle(list, random);
+            Collections.shuffle(list, new java.util.Random());
             List<Direction> list2 = list.subList(0, i);
             Iterator var9 = list2.iterator();
 
@@ -44,7 +44,7 @@ public class DeadCoralClawFeature extends DeadCoralFeature {
                 } else {
                     mutable.move(Direction.UP);
                     Direction[] directions = new Direction[]{direction2, Direction.UP};
-                    direction3 = (Direction) Util.getRandom(directions, random);
+                    direction3 = (Direction) Util.getRandom(directions, world.getRandom());
                     k = random.nextInt(3) + 3;
                 }
 
