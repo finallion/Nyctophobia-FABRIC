@@ -2,7 +2,9 @@ package com.finallion.graveyard_biomes.init;
 
 
 import com.finallion.graveyard_biomes.TheGraveyardBiomes;
+import com.finallion.graveyard_biomes.world.biomes.AncientBattlegrounds;
 import com.finallion.graveyard_biomes.world.biomes.AncientDeadCoralReef;
+import com.finallion.graveyard_biomes.world.biomes.DeepDarkForest;
 import com.finallion.graveyard_biomes.world.biomes.HauntedForestBiomes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -16,6 +18,9 @@ public class TGBiomes {
     public static final RegistryKey<Biome> HAUNTED_LAKES_KEY = registerBiomeKeys("haunted_lakes");
     public static final RegistryKey<Biome> HAUNTED_FOREST_KEY = registerBiomeKeys("haunted_forest");
     public static final RegistryKey<Biome> ANCIENT_DEAD_CORAL_REEF_KEY = registerBiomeKeys("ancient_dead_coral_reef");
+    public static final RegistryKey<Biome> DEATH_MARCHES = registerBiomeKeys("death_marches");
+    public static final RegistryKey<Biome> DEEP_DARK_FOREST = registerBiomeKeys("deep_dark_forest");
+    public static final RegistryKey<Biome> ANCIENT_BATTLEGROUNDS = registerBiomeKeys("ancient_battlegrounds");
 
     private static RegistryKey<Biome> registerBiomeKeys(String name) {
         return RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyardBiomes.MOD_ID, name));
@@ -26,6 +31,8 @@ public class TGBiomes {
         register(ERODED_HAUNTED_FOREST_KEY, HauntedForestBiomes.createErodedHauntedForest());
         register(HAUNTED_LAKES_KEY, HauntedForestBiomes.createHauntedLakes());
         register(ANCIENT_DEAD_CORAL_REEF_KEY, AncientDeadCoralReef.createAncientDeadCoralReef());
+        register(ANCIENT_BATTLEGROUNDS, AncientBattlegrounds.createAncientBattlegrounds());
+        register(DEEP_DARK_FOREST, DeepDarkForest.createDeepDarkForest());
     }
 
     private static RegistryEntry<Biome> register(RegistryKey<Biome> key, Biome biome) {

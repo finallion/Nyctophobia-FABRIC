@@ -5,9 +5,13 @@ import com.finallion.graveyard_biomes.init.TGBiomes;
 import com.finallion.graveyard_biomes.world.noise.TGNoiseParameters;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.PillarBlock;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
+
+import java.util.Properties;
 
 public class TGSurfaceRules {
     //private static final MaterialRules.MaterialRule TG_MOSS_BLOCK = block(TGBlocks.TG_MOSS_BLOCK);
@@ -22,6 +26,8 @@ public class TGSurfaceRules {
     private static final MaterialRules.MaterialRule TUFF = block(Blocks.TUFF);
     private static final MaterialRules.MaterialRule SAND = block(Blocks.SAND);
     private static final MaterialRules.MaterialRule SANDSTONE = block(Blocks.SANDSTONE);
+    private static final MaterialRules.MaterialRule BONE_BLOCK = block(Blocks.BONE_BLOCK.getDefaultState().with(PillarBlock.AXIS, Direction.Axis.Y).getBlock());
+    private static final MaterialRules.MaterialRule NETHER_WART = block(Blocks.NETHER_WART_BLOCK);
 
     public static MaterialRules.MaterialRule makeRules() {
         // TODO: take material rules together for example STONE_DEPTH_FLOOR
@@ -55,6 +61,20 @@ public class TGSurfaceRules {
                                                 MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.9, 1.15), COARSE_DIRT)
                                         ))))));
 
+        MaterialRules.MaterialRule noiseFlesh = MaterialRules.sequence(
+                MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR, // YOffset.fixed(62)
+                        MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(62), 0),
+                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -0.1, 1.15),
+                                        MaterialRules.sequence(
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -1.0, 0.0), COARSE_DIRT),
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.0, 0.15), NETHER_WART),
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.15, 0.5), BONE_BLOCK),
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.5, 0.75), BONE_BLOCK),
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.75, 0.9), BONE_BLOCK),
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.9, 1.05), NETHER_WART),
+                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 1.05, 2.0), COARSE_DIRT)
+                                        ))))));
+
 
         MaterialRules.MaterialRule noiseMoss = MaterialRules.sequence(
                 MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR,
@@ -83,6 +103,12 @@ public class TGSurfaceRules {
                                 noiseErosion,
                                 noiseMoss93,
                                 noiseParticleMoss93));
+
+        MaterialRules.MaterialRule ancientBattleGroundRule =
+                MaterialRules.condition(MaterialRules.biome(TGBiomes.ANCIENT_BATTLEGROUNDS),
+                        MaterialRules.sequence(
+                                noiseFlesh,
+                                noiseGrass));
 
         MaterialRules.MaterialCondition above62 = MaterialRules.aboveY(YOffset.fixed(62), 0);
         MaterialRules.MaterialCondition above63_0 = MaterialRules.aboveY(YOffset.fixed(63), 0);
@@ -134,7 +160,8 @@ public class TGSurfaceRules {
                 MaterialRules.condition(MaterialRules.biome(TGBiomes.ERODED_HAUNTED_FOREST_KEY), erodedHauntedForestRule),
                 MaterialRules.condition(MaterialRules.biome(TGBiomes.HAUNTED_LAKES_KEY), hauntedForestRule),
                 MaterialRules.condition(MaterialRules.biome(TGBiomes.HAUNTED_FOREST_KEY), hauntedForestRule),
-                MaterialRules.condition(MaterialRules.biome(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY), ancientReefRule)
+                MaterialRules.condition(MaterialRules.biome(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY), ancientReefRule),
+                MaterialRules.condition(MaterialRules.biome(TGBiomes.ANCIENT_BATTLEGROUNDS), ancientBattleGroundRule)
         );
     }
 

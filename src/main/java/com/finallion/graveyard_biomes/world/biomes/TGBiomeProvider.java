@@ -60,6 +60,20 @@ public class TGBiomeProvider extends Region {
                 }
             }
 
+            if (TheGraveyardBiomes.config.getBiome(new Identifier(TheGraveyardBiomes.MOD_ID,"ancient_battlegrounds")).canGenerate) {
+                List<String> configBiomes = TheGraveyardBiomes.config.biomeConfigEntries.get("ancient_battlegrounds").replaceableBiomes;
+                for (String configBiome : configBiomes) {
+                    //builder.replaceBiome(parseBiomeKeys(configBiome), TGBiomes.ANCIENT_BATTLEGROUNDS);
+                }
+            }
+
+            if (TheGraveyardBiomes.config.getBiome(new Identifier(TheGraveyardBiomes.MOD_ID,"deep_dark_forest")).canGenerate) {
+                List<String> configBiomes = TheGraveyardBiomes.config.biomeConfigEntries.get("deep_dark_forest").replaceableBiomes;
+                for (String configBiome : configBiomes) {
+                    builder.replaceBiome(parseBiomeKeys(configBiome), TGBiomes.DEEP_DARK_FOREST);
+                }
+            }
+
         });
 
     }
