@@ -1,7 +1,9 @@
 package com.finallion.graveyard_biomes.world.features.surfaceFeatures;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeavesBlock;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
@@ -11,10 +13,11 @@ import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
 
 public class BushFeature extends Feature<DefaultFeatureConfig> {
+    private LeavesBlock leavesBlock;
 
-
-    public BushFeature(Codec<DefaultFeatureConfig> configCodec) {
+    public BushFeature(Codec<DefaultFeatureConfig> configCodec, LeavesBlock block) {
         super(configCodec);
+        this.leavesBlock = block;
     }
 
     @Override
@@ -32,7 +35,7 @@ public class BushFeature extends Feature<DefaultFeatureConfig> {
             mutable.setY(i);
             if (FeatureHelper.canBePlaced(world.getBlockState(mutable)) && world.getBlockState(mutable.up()).isAir() && FeatureHelper.isCorrectBiome(world.getBiome(mutable).getKey().get())) {
                 if (random.nextInt(7) == 0) {
-                    world.setBlockState(mutable.up(), Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.PERSISTENT, true), 2);
+                    world.setBlockState(mutable.up(), leavesBlock.getDefaultState().with(Properties.PERSISTENT, true), 2);
                     break;
                 }
             }

@@ -39,6 +39,14 @@ public class DeepDarkOakTrunkPlacer extends TrunkPlacer {
         setToDirt(world, replacer, random, blockPos.east(), config);
         setToDirt(world, replacer, random, blockPos.south(), config);
         setToDirt(world, replacer, random, blockPos.south().east(), config);
+        setToDirt(world, replacer, random, blockPos.east().east(), config);
+        setToDirt(world, replacer, random, blockPos.north().east(), config);
+        setToDirt(world, replacer, random, blockPos.north(), config);
+        setToDirt(world, replacer, random, blockPos.south().south().east(), config);
+        setToDirt(world, replacer, random, blockPos.south().east().east(), config);
+        setToDirt(world, replacer, random, blockPos.south().south(), config);
+        setToDirt(world, replacer, random, blockPos.west(), config);
+        setToDirt(world, replacer, random, blockPos.south().west(), config);
 
         int startPosX = startPos.getX();
         int startPosY = startPos.getY();

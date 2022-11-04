@@ -32,7 +32,7 @@ public class FeatureHelper {
     }
 
     public static boolean isCorrectBiome(RegistryKey<Biome> key) {
-        if (key.getValue().getPath().contains("haunted")) {
+        if (key.getValue().getPath().contains("haunted") || key.getValue().getPath().contains("deep_dark_forest")) {
             return true;
         }
         return false;

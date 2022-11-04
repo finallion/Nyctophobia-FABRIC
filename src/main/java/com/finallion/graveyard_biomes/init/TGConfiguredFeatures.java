@@ -10,6 +10,8 @@ import com.finallion.graveyard_biomes.world.features.trees.config.TGTreeFeatureC
 import com.finallion.graveyard_biomes.world.trunk.DeepDarkOakTrunkPlacer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeavesBlock;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DataPool;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
@@ -52,7 +54,8 @@ public class TGConfiguredFeatures {
     // other features
     private static final Feature<DefaultFeatureConfig> MOSS_CARPET_FEATURE = registerFeature("moss_carpet_feature", new MossCarpetFeature(DefaultFeatureConfig.CODEC));
     private static final Feature<DefaultFeatureConfig> COBWEB_FEATURE = registerFeature("cobweb_feature", new CobwebFeature(DefaultFeatureConfig.CODEC));
-    private static final Feature<DefaultFeatureConfig> BUSH_FEATURE = registerFeature("bush_feature", new BushFeature(DefaultFeatureConfig.CODEC));
+    private static final Feature<DefaultFeatureConfig> BUSH_FEATURE = registerFeature("bush_feature", new BushFeature(DefaultFeatureConfig.CODEC, (LeavesBlock) Blocks.SPRUCE_LEAVES));
+    private static final Feature<DefaultFeatureConfig> DEEP_DARK_FOREST_BUSH_FEATURE = registerFeature("deep_dark_forest_bush_feature", new BushFeature(DefaultFeatureConfig.CODEC, (LeavesBlock) Blocks.DARK_OAK_LEAVES));
     private static final Feature<DefaultFeatureConfig> SOUL_LIGHT_FEATURE = registerFeature("soul_light_feature", new SoulLightFeature(DefaultFeatureConfig.CODEC));
     private static final Feature<DefaultFeatureConfig> FALLEN_TREE_FEATURE = registerFeature("fallen_tree_feature", new FallenTreeFeature(DefaultFeatureConfig.CODEC));
     private static final Feature<DefaultFeatureConfig> DEAD_CORAL_TREE_FEATURE = registerFeature("dead_coral_tree_feature", new DeadCoralTreeFeature(DefaultFeatureConfig.CODEC));
@@ -60,12 +63,13 @@ public class TGConfiguredFeatures {
     private static final Feature<DefaultFeatureConfig> DEAD_CORAL_MUSHROOM_FEATURE = registerFeature("dead_coral_mushroom_feature", new DeadCoralMushroomFeature(DefaultFeatureConfig.CODEC));
     private static final Feature<DefaultFeatureConfig> DEAD_CORAL_PATCH_FEATURE = registerFeature("dead_coral_patch_feature", new DeadCoralPatchFeature(DefaultFeatureConfig.CODEC));
 
-    private static final Feature<HugeMushroomFeatureConfig> DEEP_DARK_RED_MUSHROOM_FEATURE = registerFeature("deep_dark_red_mushroom_feature", new DeepDarkRedMushroom(HugeMushroomFeatureConfig.CODEC));
+    //private static final Feature<HugeMushroomFeatureConfig> DEEP_DARK_RED_MUSHROOM_FEATURE = registerFeature("deep_dark_red_mushroom_feature", new DeepDarkRedMushroom(HugeMushroomFeatureConfig.CODEC));
 
     // configured features registry keys
     public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> MOSS_CARPET_FEATURE_CONFIG = registerConfiguredFeature("moss_carpet_feature", MOSS_CARPET_FEATURE, FeatureConfig.DEFAULT);
     public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> COBWEB_FEATURE_CONFIG = registerConfiguredFeature("cobweb_feature", COBWEB_FEATURE, FeatureConfig.DEFAULT);
     public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> BUSH_FEATURE_CONFIG = registerConfiguredFeature("bush_feature", BUSH_FEATURE, FeatureConfig.DEFAULT);
+    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> DEEP_DARK_FOREST_BUSH_FEATURE_CONFIG = registerConfiguredFeature("deep_dark_forest_bush_feature", DEEP_DARK_FOREST_BUSH_FEATURE, FeatureConfig.DEFAULT);
     public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> SOUL_LIGHT_FEATURE_CONFIG = registerConfiguredFeature("soul_light_feature", SOUL_LIGHT_FEATURE, FeatureConfig.DEFAULT);
     public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> FALLEN_TREE_FEATURE_CONFIG = registerConfiguredFeature("fallen_tree_feature", FALLEN_TREE_FEATURE, FeatureConfig.DEFAULT);
     public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> DEAD_CORAL_PATCH_FEATURE_CONFIG = registerConfiguredFeature("dead_coral_patch_feature", DEAD_CORAL_PATCH_FEATURE, FeatureConfig.DEFAULT);
@@ -97,22 +101,26 @@ public class TGConfiguredFeatures {
     public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_BENT_SPRUCE_TREE_02_STRIPPED_CONFIG = registerConfiguredFeature("large_bent_spruce_tree_stripped_02", LARGE_BENT_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
     public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_BENT_SPRUCE_TREE_02_CONFIG = registerConfiguredFeature("large_bent_spruce_tree_02", LARGE_BENT_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
 
-    public static final RegistryEntry<ConfiguredFeature<HugeMushroomFeatureConfig, ?>> DEEP_DARK_RED_MUSHROOM_FEATURE_CONFIG = registerConfiguredFeature("deep_dark_red_mushroom_feature_config", DEEP_DARK_RED_MUSHROOM_FEATURE, new HugeMushroomFeatureConfig(BlockStateProvider.of(Blocks.RED_MUSHROOM_BLOCK.getDefaultState()), BlockStateProvider.of(Blocks.MUSHROOM_STEM.getDefaultState()), 0));
+    //public static final RegistryEntry<ConfiguredFeature<HugeMushroomFeatureConfig, ?>> DEEP_DARK_RED_MUSHROOM_FEATURE_CONFIG = registerConfiguredFeature("deep_dark_red_mushroom_feature_config", DEEP_DARK_RED_MUSHROOM_FEATURE, new HugeMushroomFeatureConfig(BlockStateProvider.of(Blocks.RED_MUSHROOM_BLOCK.getDefaultState()), BlockStateProvider.of(Blocks.MUSHROOM_STEM.getDefaultState()), 0));
 
     public static final RegistryEntry<ConfiguredFeature<TreeFeatureConfig, ?>> DEEP_DARK_OAK = registerConfiguredFeature("deep_dark_oak", Feature.TREE, (new TreeFeatureConfig.Builder(BlockStateProvider.of(Blocks.DARK_OAK_LOG), new DeepDarkOakTrunkPlacer(13, 4, 2), BlockStateProvider.of(Blocks.DARK_OAK_LEAVES), new DarkOakFoliagePlacer(ConstantIntProvider.create(0), ConstantIntProvider.create(0)), new ThreeLayersFeatureSize(1, 1, 0, 1, 2, OptionalInt.empty()))).ignoreVines().build());
+    public static final RegistryEntry<ConfiguredFeature<RandomPatchFeatureConfig, ?>> TG_PATCH_LARGE_FERN_CONFIG = registerConfiguredFeature("tg_patch_large_fern_config", Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(96, 7, 3, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.LARGE_FERN)))));
+    public static final RegistryEntry<ConfiguredFeature<RandomPatchFeatureConfig, ?>> TG_PATCH_LEAVES_CONFIG = registerConfiguredFeature("tg_patch_leaves_config", Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(64, 6, 0, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.OAK_LEAVES.getDefaultState().with(Properties.PERSISTENT, true))))));
 
     // placed features
     public static RegistryEntry<PlacedFeature> MOSS_CARPET_PLACED_FEATURE = registerPlacedFeature("moss_carpet_feature", MOSS_CARPET_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
     public static RegistryEntry<PlacedFeature> COBWEB_PLACED_FEATURE = registerPlacedFeature("cobweb_feature", COBWEB_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(40));
     public static RegistryEntry<PlacedFeature> BUSH_PLACED_FEATURE = registerPlacedFeature("bush_feature", BUSH_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(35));
+    public static RegistryEntry<PlacedFeature> DEEP_DARK_FOREST_BUSH_PLACED_FEATURE = registerPlacedFeature("deep_dark_forest_bush_feature", DEEP_DARK_FOREST_BUSH_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(35));
     public static RegistryEntry<PlacedFeature> SOUL_LIGHT_PLACED_FEATURE = registerPlacedFeature("soul_light_feature", SOUL_LIGHT_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
     public static RegistryEntry<PlacedFeature> FALLEN_TREE_PLACED_FEATURE = registerPlacedFeature("fallen_tree_feature", FALLEN_TREE_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(20));
     public static RegistryEntry<PlacedFeature> DEAD_CORAL_PATCH_PLACED_FEATURE = registerPlacedFeature("dead_coral_patch_feature", DEAD_CORAL_PATCH_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(35));
 
-    public static RegistryEntry<PlacedFeature> DEEP_DARK_RED_MUSHROOM_PLACED_FEATURE = registerPlacedFeature("deep_dark_red_mushroom_placed_feature", DEEP_DARK_RED_MUSHROOM_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(20));
+    //public static RegistryEntry<PlacedFeature> DEEP_DARK_RED_MUSHROOM_PLACED_FEATURE = registerPlacedFeature("deep_dark_red_mushroom_placed_feature", DEEP_DARK_RED_MUSHROOM_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(20));
 
     public static RegistryEntry<PlacedFeature> DEEP_DARK_OAK_CHECKED = registerPlacedFeature("deep_dark_oak_checked", TGConfiguredFeatures.DEEP_DARK_OAK, new PlacementModifier[]{PlacedFeatures.wouldSurvive(Blocks.DARK_OAK_SAPLING)});
-
+    public static RegistryEntry<PlacedFeature> TG_PATCH_LARGE_FERN = registerPlacedFeature("tg_patch_large_fern", TGConfiguredFeatures.TG_PATCH_LARGE_FERN_CONFIG, new PlacementModifier[]{RarityFilterPlacementModifier.of(5), SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()});
+    public static RegistryEntry<PlacedFeature> TG_PATCH_LEAVES = registerPlacedFeature("tg_patch_leaves", TGConfiguredFeatures.TG_PATCH_LEAVES_CONFIG, new PlacementModifier[]{RarityFilterPlacementModifier.of(5), SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()});
 
     // configured tree feature collections
     public static final RegistryEntry<ConfiguredFeature<RandomFeatureConfig, ?>> HAUNTED_FOREST_TREES = registerConfiguredFeature("haunted_forest_trees", Feature.RANDOM_SELECTOR,
@@ -170,17 +178,16 @@ public class TGConfiguredFeatures {
 
     public static final RegistryEntry<ConfiguredFeature<RandomFeatureConfig, ?>> DEEP_DARK_FOREST_VEGETATION = registerConfiguredFeature("deep_dark_forest_vegetation", Feature.RANDOM_SELECTOR,
             new RandomFeatureConfig(List.of(
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(TreeConfiguredFeatures.HUGE_BROWN_MUSHROOM, new PlacementModifier[0]), 0.05F),
+                    new RandomFeatureEntry(PlacedFeatures.createEntry(TreeConfiguredFeatures.HUGE_BROWN_MUSHROOM, new PlacementModifier[0]), 0.025F),
                     new RandomFeatureEntry(PlacedFeatures.createEntry(TreeConfiguredFeatures.HUGE_RED_MUSHROOM, new PlacementModifier[0]), 0.025F),
-                    new RandomFeatureEntry(TGConfiguredFeatures.DEEP_DARK_OAK_CHECKED, 0.6666667F),
-                    new RandomFeatureEntry(TreePlacedFeatures.DARK_OAK_CHECKED, 0.2F),
-                    new RandomFeatureEntry(TreePlacedFeatures.JUNGLE_BUSH, 0.1F)), TreePlacedFeatures.DARK_OAK_CHECKED));
+                    new RandomFeatureEntry(TGConfiguredFeatures.DEEP_DARK_OAK_CHECKED, 0.8666667F),
+                    new RandomFeatureEntry(TreePlacedFeatures.DARK_OAK_CHECKED, 0.1F)), TreePlacedFeatures.DARK_OAK_CHECKED));
 
     public static RegistryEntry<PlacedFeature> ERODED_HAUNTED_FOREST_TREES_PLACED_FEATURE = registerPlacedFeature("eroded_haunted_forest_trees", ERODED_HAUNTED_FOREST_TREES, PlacedFeatures.createCountExtraModifier(10, 0.1F, 1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
     public static RegistryEntry<PlacedFeature> HAUNTED_FOREST_TREES_PLACED_FEATURE = registerPlacedFeature("haunted_forest_trees", HAUNTED_FOREST_TREES, PlacedFeatures.createCountExtraModifier(15, 0.1F, 1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
     public static RegistryEntry<PlacedFeature> ANCIENT_DEAD_CORAL_REEF_WATER_PLACED_FEATURE = registerPlacedFeature("ancient_dead_reef_water_vegetation", ANCIENT_DEAD_REEF_VEGETATION, NoiseBasedCountPlacementModifier.of(20, 400.0D, 0.0D), SquarePlacementModifier.of(), PlacedFeatures.OCEAN_FLOOR_WG_HEIGHTMAP, BiomePlacementModifier.of());
     public static RegistryEntry<PlacedFeature> ANCIENT_DEAD_CORAL_REEF_PLACED_FEATURE = registerPlacedFeature("ancient_dead_reef_vegetation", ANCIENT_DEAD_REEF_VEGETATION, NoiseBasedCountPlacementModifier.of(20, 200.0D, 0.0D), SquarePlacementModifier.of(), PlacedFeatures.OCEAN_FLOOR_HEIGHTMAP, BiomePlacementModifier.of());
-    public static RegistryEntry<PlacedFeature> DEEP_DARK_FOREST_PLACED_VEGETATION = registerPlacedFeature("deep_dark_forest_vegetation", TGConfiguredFeatures.DEEP_DARK_FOREST_VEGETATION, new PlacementModifier[]{CountPlacementModifier.of(25), SquarePlacementModifier.of(), SurfaceWaterDepthFilterPlacementModifier.of(0), PlacedFeatures.OCEAN_FLOOR_HEIGHTMAP, BiomePlacementModifier.of()});
+    public static RegistryEntry<PlacedFeature> DEEP_DARK_FOREST_PLACED_VEGETATION = registerPlacedFeature("deep_dark_forest_vegetation", TGConfiguredFeatures.DEEP_DARK_FOREST_VEGETATION, new PlacementModifier[]{CountPlacementModifier.of(35), SquarePlacementModifier.of(), SurfaceWaterDepthFilterPlacementModifier.of(0), PlacedFeatures.OCEAN_FLOOR_HEIGHTMAP, BiomePlacementModifier.of()});
 
     public static RegistryEntry<PlacedFeature> registerPlacedFeature(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, PlacementModifier... modifiers) {
         return BuiltinRegistries.add(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyardBiomes.MOD_ID, id), new PlacedFeature(RegistryEntry.upcast(registryEntry), List.of(modifiers)));

@@ -28,10 +28,17 @@ public class TGSurfaceRules {
     private static final MaterialRules.MaterialRule SANDSTONE = block(Blocks.SANDSTONE);
     private static final MaterialRules.MaterialRule BONE_BLOCK = block(Blocks.BONE_BLOCK.getDefaultState().with(PillarBlock.AXIS, Direction.Axis.Y).getBlock());
     private static final MaterialRules.MaterialRule NETHER_WART = block(Blocks.NETHER_WART_BLOCK);
+    private static final MaterialRules.MaterialRule MOSSY_COBBLESTONE = block(Blocks.MOSSY_COBBLESTONE);
+    private static final MaterialRules.MaterialRule GREEN_TERRACOTTA = block(Blocks.GREEN_TERRACOTTA);
+    private static final MaterialRules.MaterialRule DIRT = block(Blocks.DIRT);
+    private static final MaterialRules.MaterialRule AIR = block(Blocks.AIR);
+    private static final MaterialRules.MaterialRule STONE = block(Blocks.STONE);
+    private static final MaterialRules.MaterialRule DEEPSLATE = block(Blocks.DEEPSLATE);
 
     public static MaterialRules.MaterialRule makeRules() {
         // TODO: take material rules together for example STONE_DEPTH_FLOOR
         // TODO: remove redundant boxing
+
         MaterialRules.MaterialRule noiseGrass = MaterialRules.sequence(
                 MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR,
                         MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(62), 0),
@@ -47,6 +54,32 @@ public class TGSurfaceRules {
                         MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(62), 0),
                                 MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.2, 0.4), COARSE_DIRT)))));
 
+        MaterialRules.MaterialRule noiseMossCobble =
+                MaterialRules.sequence(
+                        MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR,
+                                MaterialRules.sequence(
+                                        MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(62), 0),
+                                                MaterialRules.sequence(
+                                                        MaterialRules.sequence(
+                                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE_SWAMP, -0.4D, 0.2D), MOSS_BLOCK),
+                                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.PATCH, 0.5D, 0.6D), MOSSY_COBBLESTONE)),
+                                                        MaterialRules.sequence(
+                                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE_SWAMP, -0.4D, 0.3D), GRASS_BLOCK),
+                                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE_SWAMP, -0.5D, 0.5D), COARSE_DIRT),
+                                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.NETHER_WART, -1.0D, 1.0D), ROOTED_DIRT),
+                                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.CLAY_BANDS_OFFSET, -0.3D, 0.4D), MOSSY_COBBLESTONE),
+                                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.PATCH, -0.3D, 0.3D), MOSSY_COBBLESTONE)),
+                                                        MaterialRules.sequence(
+                                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.2D, 0.5D), GRASS_BLOCK),
+                                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.PATCH, -0.8D, 0.8D), ROOTED_DIRT)))),
+                                        MaterialRules.sequence(
+                                                MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(61), 0), DIRT),
+                                                MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(0), 0), STONE),
+                                                MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(-64), 0), DEEPSLATE)
+                                        ))
+                                        //MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -2.0, 2.0), AIR))
+                                        ));
+
         MaterialRules.MaterialRule noiseErosion = MaterialRules.sequence(
                 MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR, // YOffset.fixed(62)
                         MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(93), 0),
@@ -60,21 +93,6 @@ public class TGSurfaceRules {
                                                 //MaterialRules.sequence(MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.ICE, -0.2, 0.2), SOUL_SOIL), SOUL_SAND)),
                                                 MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.9, 1.15), COARSE_DIRT)
                                         ))))));
-
-        MaterialRules.MaterialRule noiseFlesh = MaterialRules.sequence(
-                MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR, // YOffset.fixed(62)
-                        MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(62), 0),
-                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -0.1, 1.15),
-                                        MaterialRules.sequence(
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, -1.0, 0.0), COARSE_DIRT),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.0, 0.15), NETHER_WART),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.15, 0.5), BONE_BLOCK),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.5, 0.75), BONE_BLOCK),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.75, 0.9), BONE_BLOCK),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 0.9, 1.05), NETHER_WART),
-                                                MaterialRules.condition(MaterialRules.noiseThreshold(NoiseParametersKeys.SURFACE, 1.05, 2.0), COARSE_DIRT)
-                                        ))))));
-
 
         MaterialRules.MaterialRule noiseMoss = MaterialRules.sequence(
                 MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR,
@@ -96,20 +114,8 @@ public class TGSurfaceRules {
                         MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(93), 2), // TODO: PARTICLE
                                 MaterialRules.condition(MaterialRules.noiseThreshold(TGNoiseParameters.HAUNTED_FOREST_PARTICLE_MOSS, -0.1, 0.1), MOSS_BLOCK)))));
 
-        MaterialRules.MaterialRule erodedHauntedForestRule =
-                MaterialRules.condition(MaterialRules.biome(TGBiomes.ERODED_HAUNTED_FOREST_KEY),
-                        MaterialRules.sequence(
-                                noiseGrass93,
-                                noiseErosion,
-                                noiseMoss93,
-                                noiseParticleMoss93));
 
-        MaterialRules.MaterialRule ancientBattleGroundRule =
-                MaterialRules.condition(MaterialRules.biome(TGBiomes.ANCIENT_BATTLEGROUNDS),
-                        MaterialRules.sequence(
-                                noiseFlesh,
-                                noiseGrass));
-
+        /* ACTUAL BIOME SURFACE */
         MaterialRules.MaterialCondition above62 = MaterialRules.aboveY(YOffset.fixed(62), 0);
         MaterialRules.MaterialCondition above63_0 = MaterialRules.aboveY(YOffset.fixed(63), 0);
         MaterialRules.MaterialRule waterErosionRule = MaterialRules.sequence(
@@ -127,6 +133,16 @@ public class TGSurfaceRules {
 
         MaterialRules.MaterialCondition above68_0 = MaterialRules.aboveY(YOffset.fixed(68), 0);
 
+        MaterialRules.MaterialRule erodedHauntedForestRule =
+                MaterialRules.condition(MaterialRules.biome(TGBiomes.ERODED_HAUNTED_FOREST_KEY),
+                        MaterialRules.sequence(
+                                noiseGrass93,
+                                noiseErosion,
+                                noiseMoss93,
+                                noiseParticleMoss93));
+
+        MaterialRules.MaterialRule deepDarkForestRule =
+                MaterialRules.condition(MaterialRules.biome(TGBiomes.DEEP_DARK_FOREST), noiseMossCobble);
 
         MaterialRules.MaterialRule hauntedForestRule =
                 MaterialRules.sequence(
@@ -161,7 +177,7 @@ public class TGSurfaceRules {
                 MaterialRules.condition(MaterialRules.biome(TGBiomes.HAUNTED_LAKES_KEY), hauntedForestRule),
                 MaterialRules.condition(MaterialRules.biome(TGBiomes.HAUNTED_FOREST_KEY), hauntedForestRule),
                 MaterialRules.condition(MaterialRules.biome(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY), ancientReefRule),
-                MaterialRules.condition(MaterialRules.biome(TGBiomes.ANCIENT_BATTLEGROUNDS), ancientBattleGroundRule)
+                MaterialRules.condition(MaterialRules.biome(TGBiomes.DEEP_DARK_FOREST), deepDarkForestRule)
         );
     }
 

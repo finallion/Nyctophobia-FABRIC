@@ -31,7 +31,7 @@ public class TGBiomes {
         register(ERODED_HAUNTED_FOREST_KEY, HauntedForestBiomes.createErodedHauntedForest());
         register(HAUNTED_LAKES_KEY, HauntedForestBiomes.createHauntedLakes());
         register(ANCIENT_DEAD_CORAL_REEF_KEY, AncientDeadCoralReef.createAncientDeadCoralReef());
-        register(ANCIENT_BATTLEGROUNDS, AncientBattlegrounds.createAncientBattlegrounds());
+        //register(ANCIENT_BATTLEGROUNDS, AncientBattlegrounds.createAncientBattlegrounds());
         register(DEEP_DARK_FOREST, DeepDarkForest.createDeepDarkForest());
     }
 

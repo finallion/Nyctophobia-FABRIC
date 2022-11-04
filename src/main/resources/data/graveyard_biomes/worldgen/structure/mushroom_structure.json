@@ -6,7 +6,7 @@
   "biomes": "#graveyard_biomes:has_structure/mushroom_biomes",
   "step": "surface_structures",
   "start_height": {
-      "absolute": 0
+      "absolute": -1
   },
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
   "spawn_overrides": {
