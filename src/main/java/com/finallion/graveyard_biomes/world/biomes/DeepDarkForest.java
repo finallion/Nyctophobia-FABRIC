@@ -62,12 +62,12 @@ public class DeepDarkForest {
         DefaultBiomeFeatures.addMineables(generationSettings);
         DefaultBiomeFeatures.addSprings(generationSettings);
         DefaultBiomeFeatures.addFrozenTopLayer(generationSettings);
-        DefaultBiomeFeatures.addPlainsTallGrass(generationSettings);
     }
 
     private static void addTaigaFeatures(GenerationSettings.Builder generationSettings) {
         DefaultBiomeFeatures.addMossyRocks(generationSettings);
         DefaultBiomeFeatures.addLargeFerns(generationSettings);
+        DefaultBiomeFeatures.addPlainsTallGrass(generationSettings);
         DefaultBiomeFeatures.addDefaultOres(generationSettings);
         DefaultBiomeFeatures.addDefaultDisks(generationSettings);
         DefaultBiomeFeatures.addMeadowFlowers(generationSettings);
