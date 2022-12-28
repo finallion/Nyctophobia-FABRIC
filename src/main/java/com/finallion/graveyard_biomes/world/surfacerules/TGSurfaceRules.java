@@ -104,16 +104,6 @@ public class TGSurfaceRules {
                         MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(93), 2),
                                 MaterialRules.condition(MaterialRules.noiseThreshold(TGNoiseParameters.HAUNTED_FOREST_NOISE, -0.2, 2.0), MOSS_BLOCK)))));
 
-        MaterialRules.MaterialRule noiseParticleMoss = MaterialRules.sequence(
-                MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR,
-                        MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(62), 0), // TODO: PARTICLE
-                                MaterialRules.condition(MaterialRules.noiseThreshold(TGNoiseParameters.HAUNTED_FOREST_PARTICLE_MOSS, -0.1, 0.1), MOSS_BLOCK)))));
-
-        MaterialRules.MaterialRule noiseParticleMoss93 = MaterialRules.sequence(
-                MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR,
-                        MaterialRules.sequence(MaterialRules.condition(MaterialRules.aboveY(YOffset.fixed(93), 2), // TODO: PARTICLE
-                                MaterialRules.condition(MaterialRules.noiseThreshold(TGNoiseParameters.HAUNTED_FOREST_PARTICLE_MOSS, -0.1, 0.1), MOSS_BLOCK)))));
-
 
         /* ACTUAL BIOME SURFACE */
         MaterialRules.MaterialCondition above62 = MaterialRules.aboveY(YOffset.fixed(62), 0);
@@ -138,8 +128,7 @@ public class TGSurfaceRules {
                         MaterialRules.sequence(
                                 noiseGrass93,
                                 noiseErosion,
-                                noiseMoss93,
-                                noiseParticleMoss93));
+                                noiseMoss93));
 
         MaterialRules.MaterialRule deepDarkForestRule =
                 MaterialRules.condition(MaterialRules.biome(TGBiomes.DEEP_DARK_FOREST), noiseMossCobble);
@@ -150,8 +139,7 @@ public class TGSurfaceRules {
                                 MaterialRules.sequence(
                                         noiseGrass,
                                         noiseCoarseDirt,
-                                        noiseMoss,
-                                        noiseParticleMoss)),
+                                        noiseMoss)),
                         MaterialRules.condition(MaterialRules.biome(TGBiomes.HAUNTED_LAKES_KEY), waterErosionRule));
 
 

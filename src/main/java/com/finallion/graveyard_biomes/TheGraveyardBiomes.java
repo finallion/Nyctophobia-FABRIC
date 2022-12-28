@@ -1,10 +1,8 @@
 package com.finallion.graveyard_biomes;
 
 import com.finallion.graveyard_biomes.config.GraveyardBiomesConfig;
-import com.finallion.graveyard_biomes.init.TGBiomes;
-import com.finallion.graveyard_biomes.init.TGConfiguredFeatures;
-import com.finallion.graveyard_biomes.init.TGStructures;
-import com.finallion.graveyard_biomes.init.TGTrunkPlacer;
+import com.finallion.graveyard_biomes.init.*;
+import com.finallion.graveyard_biomes.util.TGTags;
 import com.finallion.graveyard_biomes.world.biomes.TGBiomeProvider;
 import com.finallion.graveyard_biomes.world.noise.TGNoiseParameters;
 import com.finallion.graveyard_biomes.world.surfacerules.TGSurfaceRules;
@@ -25,9 +23,12 @@ public class TheGraveyardBiomes implements ModInitializer, TerraBlenderApi {
     @Override
     public void onInitialize() {
         TGTrunkPlacer.init();
+        TGFeatures.init();
+        TGTags.init();
         TGConfiguredFeatures.init();
-        TGNoiseParameters.init();
-        TGBiomes.registerBiomes();
+        TGPlacedFeatures.init();
+        //TGNoiseParameters.init();
+        TGBiomes.init();
         TGStructures.registerStructureFeatures();
     }
 

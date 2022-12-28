@@ -4,13 +4,13 @@ import com.finallion.graveyard_biomes.init.TGBiomes;
 import net.minecraft.block.*;
 import net.minecraft.item.BoneMealItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -46,7 +46,7 @@ public class BoneMealItemMixin {
                     RegistryEntry<Biome> registryEntry = world.getBiome(blockPos2);
                     if (registryEntry.matchesKey(TGBiomes.ANCIENT_DEAD_CORAL_REEF_KEY) || registryEntry.matchesKey(BiomeKeys.WARM_OCEAN)) {
                         if (i == 0 && facing != null && facing.getAxis().isHorizontal()) {
-                            blockState = (BlockState) Registry.BLOCK.getEntryList(BlockTags.WALL_CORALS).flatMap((blocks) -> {
+                            blockState = (BlockState) Registries.BLOCK.getEntryList(BlockTags.WALL_CORALS).flatMap((blocks) -> {
                                 return blocks.getRandom(world.random);
                             }).map((blockEntry) -> {
                                 return ((Block)blockEntry.value()).getDefaultState();
@@ -55,7 +55,7 @@ public class BoneMealItemMixin {
                                 blockState = (BlockState)blockState.with(DeadCoralWallFanBlock.FACING, facing);
                             }
                         } else if (random.nextInt(4) == 0) {
-                            blockState = (BlockState)Registry.BLOCK.getEntryList(BlockTags.UNDERWATER_BONEMEALS).flatMap((blocks) -> {
+                            blockState = (BlockState)Registries.BLOCK.getEntryList(BlockTags.UNDERWATER_BONEMEALS).flatMap((blocks) -> {
                                 return blocks.getRandom(world.random);
                             }).map((blockEntry) -> {
                                 return ((Block)blockEntry.value()).getDefaultState();

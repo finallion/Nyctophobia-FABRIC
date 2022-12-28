@@ -3,30 +3,29 @@ package com.finallion.graveyard_biomes.world.biomes;
 import com.finallion.graveyard_biomes.TheGraveyardBiomes;
 import com.finallion.graveyard_biomes.init.TGBiomes;
 import com.finallion.graveyard_biomes.init.TGConfiguredFeatures;
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
+import com.finallion.graveyard_biomes.init.TGPlacedFeatures;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.client.sound.MusicType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.feature.OceanPlacedFeatures;
+import net.minecraft.world.gen.feature.PlacedFeature;
 import net.minecraft.world.gen.feature.VegetationPlacedFeatures;
 
 public class HauntedForestBiomes {
 
-    public static Biome createHauntedForest() {
+    public static Biome createHauntedForest(FabricDynamicRegistryProvider.Entries entries) {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.FOX, 8, 2, 3));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.WOLF, 8, 3, 5));
@@ -35,14 +34,14 @@ public class HauntedForestBiomes {
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.CAT, 1, 1, 1));
         DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
 
-        GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
+        GenerationSettings.LookupBackedBuilder generationSettings = new GenerationSettings.LookupBackedBuilder(entries.placedFeatures(), entries.configuredCarvers());
 
         addBasicFeatures(generationSettings);
         addTaigaFeatures(generationSettings);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.HAUNTED_FOREST_TREES_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.MOSS_CARPET_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.COBWEB_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_PLACED_FEATURE);
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.HAUNTED_FOREST_TREES_PLACED));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.MOSS_CARPET_FEATURE));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.COBWEB_FEATURE));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.BUSH_FEATURE));
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
@@ -66,7 +65,7 @@ public class HauntedForestBiomes {
     }
 
 
-    public static Biome createHauntedLakes() {
+    public static Biome createHauntedLakes(FabricDynamicRegistryProvider.Entries entries) {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.FOX, 8, 2, 3));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.WOLF, 8, 3, 5));
@@ -74,15 +73,15 @@ public class HauntedForestBiomes {
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.PIG, 10, 3, 5));
         DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
 
-        GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
+        GenerationSettings.LookupBackedBuilder generationSettings = new GenerationSettings.LookupBackedBuilder(entries.placedFeatures(), entries.configuredCarvers());
         addBasicFeatures(generationSettings);
         addHauntedLakesFeatures(generationSettings);
 
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.HAUNTED_FOREST_TREES_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.MOSS_CARPET_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.COBWEB_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.SOUL_LIGHT_PLACED_FEATURE);
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.HAUNTED_FOREST_TREES_PLACED));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.MOSS_CARPET_FEATURE));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.COBWEB_FEATURE));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.BUSH_FEATURE));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.SOUL_LIGHT_FEATURE));
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
@@ -107,23 +106,23 @@ public class HauntedForestBiomes {
     }
 
 
-    public static Biome createErodedHauntedForest() {
+    public static Biome createErodedHauntedForest(FabricDynamicRegistryProvider.Entries entries) {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(EntityType.WITHER_SKELETON, 8, 2, 3));
         spawnSettings.spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(EntityType.SKELETON, 8, 1, 2));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.BAT, 10, 1, 1));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.CAT, 1, 1, 1));
 
-        GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
+        GenerationSettings.LookupBackedBuilder generationSettings = new GenerationSettings.LookupBackedBuilder(entries.placedFeatures(), entries.configuredCarvers());
 
         addBasicFeatures(generationSettings);
         addTaigaFeatures(generationSettings);
 
 
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.ERODED_HAUNTED_FOREST_TREES_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.FALLEN_TREE_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.COBWEB_PLACED_FEATURE);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.BUSH_PLACED_FEATURE);
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.ERODED_HAUNTED_FOREST_TREES_PLACED));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.FALLEN_TREE_FEATURE));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.COBWEB_FEATURE));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.BUSH_FEATURE));
          
 
         return (new Biome.Builder())
@@ -148,7 +147,7 @@ public class HauntedForestBiomes {
 
     }
 
-    private static void addBasicFeatures(GenerationSettings.Builder generationSettings) {
+    private static void addBasicFeatures(GenerationSettings.LookupBackedBuilder generationSettings) {
         DefaultBiomeFeatures.addLandCarvers(generationSettings);
         DefaultBiomeFeatures.addAmethystGeodes(generationSettings);
         DefaultBiomeFeatures.addDungeons(generationSettings);
@@ -157,7 +156,7 @@ public class HauntedForestBiomes {
         DefaultBiomeFeatures.addFrozenTopLayer(generationSettings);
     }
 
-    private static void addTaigaFeatures(GenerationSettings.Builder generationSettings) {
+    private static void addTaigaFeatures(GenerationSettings.LookupBackedBuilder generationSettings) {
         DefaultBiomeFeatures.addMossyRocks(generationSettings);
         DefaultBiomeFeatures.addLargeFerns(generationSettings);
         DefaultBiomeFeatures.addDefaultOres(generationSettings);
@@ -169,7 +168,7 @@ public class HauntedForestBiomes {
     }
 
 
-    private static void addHauntedLakesFeatures(GenerationSettings.Builder generationSettings) {
+    private static void addHauntedLakesFeatures(GenerationSettings.LookupBackedBuilder generationSettings) {
         DefaultBiomeFeatures.addDefaultOres(generationSettings);
         DefaultBiomeFeatures.addClayDisk(generationSettings);
         DefaultBiomeFeatures.addMossyRocks(generationSettings);

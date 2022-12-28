@@ -6,12 +6,13 @@ import com.finallion.graveyard_biomes.world.biomes.AncientBattlegrounds;
 import com.finallion.graveyard_biomes.world.biomes.AncientDeadCoralReef;
 import com.finallion.graveyard_biomes.world.biomes.DeepDarkForest;
 import com.finallion.graveyard_biomes.world.biomes.HauntedForestBiomes;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.carver.ConfiguredCarver;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 public class TGBiomes {
     public static final RegistryKey<Biome> ERODED_HAUNTED_FOREST_KEY = registerBiomeKeys("eroded_haunted_forest");
@@ -23,21 +24,18 @@ public class TGBiomes {
     public static final RegistryKey<Biome> ANCIENT_BATTLEGROUNDS = registerBiomeKeys("ancient_battlegrounds");
 
     private static RegistryKey<Biome> registerBiomeKeys(String name) {
-        return RegistryKey.of(Registry.BIOME_KEY, new Identifier(TheGraveyardBiomes.MOD_ID, name));
+        return RegistryKey.of(RegistryKeys.BIOME, new Identifier(TheGraveyardBiomes.MOD_ID, name));
     }
 
-    public static void registerBiomes() {
-        register(HAUNTED_FOREST_KEY, HauntedForestBiomes.createHauntedForest());
-        register(ERODED_HAUNTED_FOREST_KEY, HauntedForestBiomes.createErodedHauntedForest());
-        register(HAUNTED_LAKES_KEY, HauntedForestBiomes.createHauntedLakes());
-        register(ANCIENT_DEAD_CORAL_REEF_KEY, AncientDeadCoralReef.createAncientDeadCoralReef());
-        //register(ANCIENT_BATTLEGROUNDS, AncientBattlegrounds.createAncientBattlegrounds());
-        register(DEEP_DARK_FOREST, DeepDarkForest.createDeepDarkForest());
+    public static void init() {}
+
+
+    public static void populate(FabricDynamicRegistryProvider.Entries entries) {
+        entries.add(HAUNTED_FOREST_KEY, HauntedForestBiomes.createHauntedForest(entries));
+        entries.add(ERODED_HAUNTED_FOREST_KEY, HauntedForestBiomes.createErodedHauntedForest(entries));
+        entries.add(HAUNTED_LAKES_KEY, HauntedForestBiomes.createHauntedLakes(entries));
+        entries.add(ANCIENT_DEAD_CORAL_REEF_KEY, AncientDeadCoralReef.createAncientDeadCoralReef(entries));
+        entries.add(DEEP_DARK_FOREST, DeepDarkForest.createDeepDarkForest(entries));
+
     }
-
-    private static RegistryEntry<Biome> register(RegistryKey<Biome> key, Biome biome) {
-        return BuiltinRegistries.add(BuiltinRegistries.BIOME, key, biome);
-    }
-
-
 }

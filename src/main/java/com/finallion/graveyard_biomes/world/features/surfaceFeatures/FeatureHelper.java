@@ -2,8 +2,8 @@ package com.finallion.graveyard_biomes.world.features.surfaceFeatures;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
 

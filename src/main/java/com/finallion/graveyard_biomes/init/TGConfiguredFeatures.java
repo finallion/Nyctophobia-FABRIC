@@ -8,197 +8,239 @@ import com.finallion.graveyard_biomes.world.features.surfaceFeatures.coralFeatur
 import com.finallion.graveyard_biomes.world.features.trees.*;
 import com.finallion.graveyard_biomes.world.features.trees.config.TGTreeFeatureConfig;
 import com.finallion.graveyard_biomes.world.trunk.DeepDarkOakTrunkPlacer;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.LeavesBlock;
+import com.google.common.collect.ImmutableList;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
+import net.minecraft.block.*;
+import net.minecraft.registry.*;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DataPool;
+import net.minecraft.util.dynamic.Range;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
-import net.minecraft.util.registry.*;
+import net.minecraft.util.math.intprovider.UniformIntProvider;
+import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.size.ThreeLayersFeatureSize;
-import net.minecraft.world.gen.foliage.DarkOakFoliagePlacer;
-import net.minecraft.world.gen.foliage.MegaPineFoliagePlacer;
-import net.minecraft.world.gen.foliage.RandomSpreadFoliagePlacer;
+import net.minecraft.world.gen.feature.size.TwoLayersFeatureSize;
+import net.minecraft.world.gen.foliage.*;
 import net.minecraft.world.gen.placementmodifier.*;
+import net.minecraft.world.gen.root.AboveRootPlacement;
+import net.minecraft.world.gen.root.MangroveRootPlacement;
+import net.minecraft.world.gen.root.MangroveRootPlacer;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
+import net.minecraft.world.gen.stateprovider.DualNoiseBlockStateProvider;
+import net.minecraft.world.gen.stateprovider.RandomizedIntBlockStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
-import net.minecraft.world.gen.trunk.DarkOakTrunkPlacer;
+import net.minecraft.world.gen.treedecorator.*;
+import net.minecraft.world.gen.trunk.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 
 public class TGConfiguredFeatures {
-
-
-    public static void init() {
-
+    public static RegistryKey<ConfiguredFeature<?, ?>> of(String id) {
+        return RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, new Identifier(TheGraveyardBiomes.MOD_ID, id));
     }
 
-    // tree features
-    public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_01 = registerFeature("small_spruce_tree_01", new SmallSpruceTree01(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_02 = registerFeature("small_spruce_tree_02", new SmallSpruceTree02(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_03 = registerFeature("small_spruce_tree_03", new SmallSpruceTree03(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_04 = registerFeature("small_spruce_tree_04", new SmallSpruceTree04(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_05 = registerFeature("small_spruce_tree_05", new SmallSpruceTree05(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> SMALL_SPRUCE_TREE_06 = registerFeature("small_spruce_tree_06", new SmallSpruceTree06(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> SMALL_BENT_SPRUCE_TREE_01 = registerFeature("small_bent_spruce_tree_01", new SmallBentSpruceTree01(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> FALLEN_SPRUCE_TREE = registerFeature("fallen_spruce_tree", new FallenSpruceTree(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> LARGE_BENT_SPRUCE_TREE_01 = registerFeature("large_bent_spruce_tree_01", new LargeBentSpruceTree01(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> LARGE_BENT_SPRUCE_TREE_02 = registerFeature("large_bent_spruce_tree_02", new LargeBentSpruceTree02(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> LARGE_SPRUCE_TREE_01 = registerFeature("large_spruce_tree_01", new LargeSpruceTree01(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> LARGE_SPRUCE_TREE_02 = registerFeature("large_spruce_tree_02", new LargeSpruceTree02(TGTreeFeatureConfig.CODEC));
-    public static final Feature<TGTreeFeatureConfig> LARGE_SPRUCE_TREE_03 = registerFeature("large_spruce_tree_03", new LargeSpruceTree03(TGTreeFeatureConfig.CODEC));
+    public static void init() {}
 
-    // other features
-    private static final Feature<DefaultFeatureConfig> MOSS_CARPET_FEATURE = registerFeature("moss_carpet_feature", new MossCarpetFeature(DefaultFeatureConfig.CODEC));
-    private static final Feature<DefaultFeatureConfig> COBWEB_FEATURE = registerFeature("cobweb_feature", new CobwebFeature(DefaultFeatureConfig.CODEC));
-    private static final Feature<DefaultFeatureConfig> BUSH_FEATURE = registerFeature("bush_feature", new BushFeature(DefaultFeatureConfig.CODEC, (LeavesBlock) Blocks.SPRUCE_LEAVES));
-    private static final Feature<DefaultFeatureConfig> DEEP_DARK_FOREST_BUSH_FEATURE = registerFeature("deep_dark_forest_bush_feature", new BushFeature(DefaultFeatureConfig.CODEC, (LeavesBlock) Blocks.DARK_OAK_LEAVES));
-    private static final Feature<DefaultFeatureConfig> SOUL_LIGHT_FEATURE = registerFeature("soul_light_feature", new SoulLightFeature(DefaultFeatureConfig.CODEC));
-    private static final Feature<DefaultFeatureConfig> FALLEN_TREE_FEATURE = registerFeature("fallen_tree_feature", new FallenTreeFeature(DefaultFeatureConfig.CODEC));
-    private static final Feature<DefaultFeatureConfig> DEAD_CORAL_TREE_FEATURE = registerFeature("dead_coral_tree_feature", new DeadCoralTreeFeature(DefaultFeatureConfig.CODEC));
-    private static final Feature<DefaultFeatureConfig> DEAD_CORAL_CLAW_FEATURE = registerFeature("dead_coral_claw_feature", new DeadCoralClawFeature(DefaultFeatureConfig.CODEC));
-    private static final Feature<DefaultFeatureConfig> DEAD_CORAL_MUSHROOM_FEATURE = registerFeature("dead_coral_mushroom_feature", new DeadCoralMushroomFeature(DefaultFeatureConfig.CODEC));
-    private static final Feature<DefaultFeatureConfig> DEAD_CORAL_PATCH_FEATURE = registerFeature("dead_coral_patch_feature", new DeadCoralPatchFeature(DefaultFeatureConfig.CODEC));
-
-    //private static final Feature<HugeMushroomFeatureConfig> DEEP_DARK_RED_MUSHROOM_FEATURE = registerFeature("deep_dark_red_mushroom_feature", new DeepDarkRedMushroom(HugeMushroomFeatureConfig.CODEC));
-
-    // configured features registry keys
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> MOSS_CARPET_FEATURE_CONFIG = registerConfiguredFeature("moss_carpet_feature", MOSS_CARPET_FEATURE, FeatureConfig.DEFAULT);
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> COBWEB_FEATURE_CONFIG = registerConfiguredFeature("cobweb_feature", COBWEB_FEATURE, FeatureConfig.DEFAULT);
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> BUSH_FEATURE_CONFIG = registerConfiguredFeature("bush_feature", BUSH_FEATURE, FeatureConfig.DEFAULT);
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> DEEP_DARK_FOREST_BUSH_FEATURE_CONFIG = registerConfiguredFeature("deep_dark_forest_bush_feature", DEEP_DARK_FOREST_BUSH_FEATURE, FeatureConfig.DEFAULT);
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> SOUL_LIGHT_FEATURE_CONFIG = registerConfiguredFeature("soul_light_feature", SOUL_LIGHT_FEATURE, FeatureConfig.DEFAULT);
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> FALLEN_TREE_FEATURE_CONFIG = registerConfiguredFeature("fallen_tree_feature", FALLEN_TREE_FEATURE, FeatureConfig.DEFAULT);
-    public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> DEAD_CORAL_PATCH_FEATURE_CONFIG = registerConfiguredFeature("dead_coral_patch_feature", DEAD_CORAL_PATCH_FEATURE, FeatureConfig.DEFAULT);
-
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_01_STRIPPED_CONFIG = registerConfiguredFeature("small_spruce_tree_stripped_01", SMALL_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_01_CONFIG = registerConfiguredFeature("small_spruce_tree_01", SMALL_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_02_STRIPPED_CONFIG = registerConfiguredFeature("small_spruce_tree_stripped_02", SMALL_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_02_CONFIG = registerConfiguredFeature("small_spruce_tree_02", SMALL_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_03_STRIPPED_CONFIG = registerConfiguredFeature("small_spruce_tree_stripped_03", SMALL_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_03_CONFIG = registerConfiguredFeature("small_spruce_tree_03", SMALL_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_04_STRIPPED_CONFIG = registerConfiguredFeature("small_spruce_tree_stripped_04", SMALL_SPRUCE_TREE_04, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_04_CONFIG = registerConfiguredFeature("small_spruce_tree_04", SMALL_SPRUCE_TREE_04, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_05_STRIPPED_CONFIG = registerConfiguredFeature("small_spruce_tree_stripped_05", SMALL_SPRUCE_TREE_05, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_05_CONFIG = registerConfiguredFeature("small_spruce_tree_05", SMALL_SPRUCE_TREE_05, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_06_STRIPPED_CONFIG = registerConfiguredFeature("small_spruce_tree_stripped_06", SMALL_SPRUCE_TREE_06, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_SPRUCE_TREE_06_CONFIG = registerConfiguredFeature("small_spruce_tree_06", SMALL_SPRUCE_TREE_06, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_BENT_SPRUCE_TREE_01_STRIPPED_CONFIG = registerConfiguredFeature("small_bent_spruce_tree_stripped_01", SMALL_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> SMALL_BENT_SPRUCE_TREE_01_CONFIG = registerConfiguredFeature("small_bent_spruce_tree_01", SMALL_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> FALLEN_SPRUCE_TREE_STRIPPED_CONFIG = registerConfiguredFeature("fallen_spruce_stripped_tree", FALLEN_SPRUCE_TREE, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> FALLEN_SPRUCE_TREE_CONFIG = registerConfiguredFeature("fallen_spruce_tree", FALLEN_SPRUCE_TREE, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_SPRUCE_TREE_01_STRIPPED_CONFIG = registerConfiguredFeature("large_spruce_tree_stripped_01", LARGE_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_SPRUCE_TREE_01_CONFIG = registerConfiguredFeature("large_spruce_tree_01", LARGE_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_SPRUCE_TREE_02_STRIPPED_CONFIG = registerConfiguredFeature("large_spruce_tree_stripped_02", LARGE_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_SPRUCE_TREE_02_CONFIG = registerConfiguredFeature("large_spruce_tree_02", LARGE_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_SPRUCE_TREE_03_STRIPPED_CONFIG = registerConfiguredFeature("large_spruce_tree_stripped_03", LARGE_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_SPRUCE_TREE_03_CONFIG = registerConfiguredFeature("large_spruce_tree_03", LARGE_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_BENT_SPRUCE_TREE_01_STRIPPED_CONFIG = registerConfiguredFeature("large_bent_spruce_tree_stripped_01", LARGE_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_BENT_SPRUCE_TREE_01_CONFIG = registerConfiguredFeature("large_bent_spruce_tree_01", LARGE_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_BENT_SPRUCE_TREE_02_STRIPPED_CONFIG = registerConfiguredFeature("large_bent_spruce_tree_stripped_02", LARGE_BENT_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-    public static final RegistryEntry<ConfiguredFeature<TGTreeFeatureConfig, ?>> LARGE_BENT_SPRUCE_TREE_02_CONFIG = registerConfiguredFeature("large_bent_spruce_tree_02", LARGE_BENT_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
-
-    //public static final RegistryEntry<ConfiguredFeature<HugeMushroomFeatureConfig, ?>> DEEP_DARK_RED_MUSHROOM_FEATURE_CONFIG = registerConfiguredFeature("deep_dark_red_mushroom_feature_config", DEEP_DARK_RED_MUSHROOM_FEATURE, new HugeMushroomFeatureConfig(BlockStateProvider.of(Blocks.RED_MUSHROOM_BLOCK.getDefaultState()), BlockStateProvider.of(Blocks.MUSHROOM_STEM.getDefaultState()), 0));
-
-    public static final RegistryEntry<ConfiguredFeature<TreeFeatureConfig, ?>> DEEP_DARK_OAK = registerConfiguredFeature("deep_dark_oak", Feature.TREE, (new TreeFeatureConfig.Builder(BlockStateProvider.of(Blocks.DARK_OAK_LOG), new DeepDarkOakTrunkPlacer(13, 4, 2), BlockStateProvider.of(Blocks.DARK_OAK_LEAVES), new DarkOakFoliagePlacer(ConstantIntProvider.create(0), ConstantIntProvider.create(0)), new ThreeLayersFeatureSize(1, 1, 0, 1, 2, OptionalInt.empty()))).ignoreVines().build());
-    public static final RegistryEntry<ConfiguredFeature<RandomPatchFeatureConfig, ?>> TG_PATCH_LARGE_FERN_CONFIG = registerConfiguredFeature("tg_patch_large_fern_config", Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(96, 7, 3, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.LARGE_FERN)))));
-    public static final RegistryEntry<ConfiguredFeature<RandomPatchFeatureConfig, ?>> TG_PATCH_LEAVES_CONFIG = registerConfiguredFeature("tg_patch_leaves_config", Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(64, 6, 0, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.OAK_LEAVES.getDefaultState().with(Properties.PERSISTENT, true))))));
-
-    // placed features
-    public static RegistryEntry<PlacedFeature> MOSS_CARPET_PLACED_FEATURE = registerPlacedFeature("moss_carpet_feature", MOSS_CARPET_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
-    public static RegistryEntry<PlacedFeature> COBWEB_PLACED_FEATURE = registerPlacedFeature("cobweb_feature", COBWEB_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(40));
-    public static RegistryEntry<PlacedFeature> BUSH_PLACED_FEATURE = registerPlacedFeature("bush_feature", BUSH_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(35));
-    public static RegistryEntry<PlacedFeature> DEEP_DARK_FOREST_BUSH_PLACED_FEATURE = registerPlacedFeature("deep_dark_forest_bush_feature", DEEP_DARK_FOREST_BUSH_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(35));
-    public static RegistryEntry<PlacedFeature> SOUL_LIGHT_PLACED_FEATURE = registerPlacedFeature("soul_light_feature", SOUL_LIGHT_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(100));
-    public static RegistryEntry<PlacedFeature> FALLEN_TREE_PLACED_FEATURE = registerPlacedFeature("fallen_tree_feature", FALLEN_TREE_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(20));
-    public static RegistryEntry<PlacedFeature> DEAD_CORAL_PATCH_PLACED_FEATURE = registerPlacedFeature("dead_coral_patch_feature", DEAD_CORAL_PATCH_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(35));
-
-    //public static RegistryEntry<PlacedFeature> DEEP_DARK_RED_MUSHROOM_PLACED_FEATURE = registerPlacedFeature("deep_dark_red_mushroom_placed_feature", DEEP_DARK_RED_MUSHROOM_FEATURE_CONFIG, RarityFilterPlacementModifier.of(1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, CountPlacementModifier.of(20));
-
-    public static RegistryEntry<PlacedFeature> DEEP_DARK_OAK_CHECKED = registerPlacedFeature("deep_dark_oak_checked", TGConfiguredFeatures.DEEP_DARK_OAK, new PlacementModifier[]{PlacedFeatures.wouldSurvive(Blocks.DARK_OAK_SAPLING)});
-    public static RegistryEntry<PlacedFeature> TG_PATCH_LARGE_FERN = registerPlacedFeature("tg_patch_large_fern", TGConfiguredFeatures.TG_PATCH_LARGE_FERN_CONFIG, new PlacementModifier[]{RarityFilterPlacementModifier.of(5), SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()});
-    public static RegistryEntry<PlacedFeature> TG_PATCH_LEAVES = registerPlacedFeature("tg_patch_leaves", TGConfiguredFeatures.TG_PATCH_LEAVES_CONFIG, new PlacementModifier[]{RarityFilterPlacementModifier.of(5), SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()});
-
-    // configured tree feature collections
-    public static final RegistryEntry<ConfiguredFeature<RandomFeatureConfig, ?>> HAUNTED_FOREST_TREES = registerConfiguredFeature("haunted_forest_trees", Feature.RANDOM_SELECTOR,
-            new RandomFeatureConfig(List.of(
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_01_CONFIG, new PlacementModifier[0]), 0.25F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_02_CONFIG, new PlacementModifier[0]), 0.25F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_03_CONFIG, new PlacementModifier[0]), 0.375F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_04_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_05_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_06_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_BENT_SPRUCE_TREE_01_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(FALLEN_SPRUCE_TREE_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_01_CONFIG, new PlacementModifier[0]), 0.25F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_02_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_03_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_01_STRIPPED_CONFIG, new PlacementModifier[0]), 0.25F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_02_STRIPPED_CONFIG, new PlacementModifier[0]), 0.25F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_03_STRIPPED_CONFIG, new PlacementModifier[0]), 0.375F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_04_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_05_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_SPRUCE_TREE_06_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_BENT_SPRUCE_TREE_01_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(FALLEN_SPRUCE_TREE_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_01_STRIPPED_CONFIG, new PlacementModifier[0]), 0.25F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_02_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_03_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F)),
-                    TreePlacedFeatures.SPRUCE_CHECKED)
-    );
-
-
-    public static final RegistryEntry<ConfiguredFeature<RandomFeatureConfig, ?>> ERODED_HAUNTED_FOREST_TREES = registerConfiguredFeature("eroded_haunted_forest_trees", Feature.RANDOM_SELECTOR,
-            new RandomFeatureConfig(List.of(
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_BENT_SPRUCE_TREE_01_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(FALLEN_SPRUCE_TREE_CONFIG, new PlacementModifier[0]), 0.0075F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_BENT_SPRUCE_TREE_01_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_BENT_SPRUCE_TREE_02_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_01_CONFIG, new PlacementModifier[0]), 0.5F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_02_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_03_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(SMALL_BENT_SPRUCE_TREE_01_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(FALLEN_SPRUCE_TREE_STRIPPED_CONFIG, new PlacementModifier[0]), 0.0075F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_BENT_SPRUCE_TREE_01_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_BENT_SPRUCE_TREE_02_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_01_STRIPPED_CONFIG, new PlacementModifier[0]), 0.5F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_02_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(LARGE_SPRUCE_TREE_03_STRIPPED_CONFIG, new PlacementModifier[0]), 0.1F)),
-                    TreePlacedFeatures.SPRUCE_CHECKED)
-    );
-
-    public static final RegistryEntry<ConfiguredFeature<SimpleRandomFeatureConfig, ?>> ANCIENT_DEAD_REEF_VEGETATION = registerConfiguredFeature("ancient_dead_reef_vegetation", Feature.SIMPLE_RANDOM_SELECTOR,
-            new SimpleRandomFeatureConfig(RegistryEntryList.of(
-                    PlacedFeatures.createEntry(DEAD_CORAL_TREE_FEATURE, FeatureConfig.DEFAULT, new PlacementModifier[0]),
-                    PlacedFeatures.createEntry(DEAD_CORAL_CLAW_FEATURE, FeatureConfig.DEFAULT, new PlacementModifier[0]),
-                    PlacedFeatures.createEntry(DEAD_CORAL_MUSHROOM_FEATURE, FeatureConfig.DEFAULT, new PlacementModifier[0]))));
-
-    public static final RegistryEntry<ConfiguredFeature<RandomFeatureConfig, ?>> DEEP_DARK_FOREST_VEGETATION = registerConfiguredFeature("deep_dark_forest_vegetation", Feature.RANDOM_SELECTOR,
-            new RandomFeatureConfig(List.of(
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(TreeConfiguredFeatures.HUGE_BROWN_MUSHROOM, new PlacementModifier[0]), 0.025F),
-                    new RandomFeatureEntry(PlacedFeatures.createEntry(TreeConfiguredFeatures.HUGE_RED_MUSHROOM, new PlacementModifier[0]), 0.025F),
-                    new RandomFeatureEntry(TGConfiguredFeatures.DEEP_DARK_OAK_CHECKED, 0.8666667F),
-                    new RandomFeatureEntry(TreePlacedFeatures.DARK_OAK_CHECKED, 0.1F)), TreePlacedFeatures.DARK_OAK_CHECKED));
-
-    public static RegistryEntry<PlacedFeature> ERODED_HAUNTED_FOREST_TREES_PLACED_FEATURE = registerPlacedFeature("eroded_haunted_forest_trees", ERODED_HAUNTED_FOREST_TREES, PlacedFeatures.createCountExtraModifier(10, 0.1F, 1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
-    public static RegistryEntry<PlacedFeature> HAUNTED_FOREST_TREES_PLACED_FEATURE = registerPlacedFeature("haunted_forest_trees", HAUNTED_FOREST_TREES, PlacedFeatures.createCountExtraModifier(15, 0.1F, 1), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of());
-    public static RegistryEntry<PlacedFeature> ANCIENT_DEAD_CORAL_REEF_WATER_PLACED_FEATURE = registerPlacedFeature("ancient_dead_reef_water_vegetation", ANCIENT_DEAD_REEF_VEGETATION, NoiseBasedCountPlacementModifier.of(20, 400.0D, 0.0D), SquarePlacementModifier.of(), PlacedFeatures.OCEAN_FLOOR_WG_HEIGHTMAP, BiomePlacementModifier.of());
-    public static RegistryEntry<PlacedFeature> ANCIENT_DEAD_CORAL_REEF_PLACED_FEATURE = registerPlacedFeature("ancient_dead_reef_vegetation", ANCIENT_DEAD_REEF_VEGETATION, NoiseBasedCountPlacementModifier.of(20, 200.0D, 0.0D), SquarePlacementModifier.of(), PlacedFeatures.OCEAN_FLOOR_HEIGHTMAP, BiomePlacementModifier.of());
-    public static RegistryEntry<PlacedFeature> DEEP_DARK_FOREST_PLACED_VEGETATION = registerPlacedFeature("deep_dark_forest_vegetation", TGConfiguredFeatures.DEEP_DARK_FOREST_VEGETATION, new PlacementModifier[]{CountPlacementModifier.of(35), SquarePlacementModifier.of(), SurfaceWaterDepthFilterPlacementModifier.of(0), PlacedFeatures.OCEAN_FLOOR_HEIGHTMAP, BiomePlacementModifier.of()});
-
-    public static RegistryEntry<PlacedFeature> registerPlacedFeature(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, PlacementModifier... modifiers) {
-        return BuiltinRegistries.add(BuiltinRegistries.PLACED_FEATURE, new Identifier(TheGraveyardBiomes.MOD_ID, id), new PlacedFeature(RegistryEntry.upcast(registryEntry), List.of(modifiers)));
+    public static <FC extends FeatureConfig, F extends Feature<FC>> void register(Registerable<ConfiguredFeature<?, ?>> registerable, RegistryKey<ConfiguredFeature<?, ?>> key, F feature, FC config) {
+        registerable.register(key, new ConfiguredFeature(feature, config));
     }
 
-    public static <FC extends FeatureConfig, F extends Feature<FC>> RegistryEntry<ConfiguredFeature<FC, ?>> registerConfiguredFeature(String id, F feature, FC config) {
-        return BuiltinRegistries.addCasted(BuiltinRegistries.CONFIGURED_FEATURE, id, new ConfiguredFeature<>(feature, config));
+    public static final RegistryKey<ConfiguredFeature<?, ?>> MOSS_CARPET_FEATURE = of("moss_carpet_feature");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> COBWEB_FEATURE = of("cobweb_feature");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> BUSH_FEATURE = of("bush_feature");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> DEEP_DARK_FOREST_BUSH_FEATURE = of("deep_dark_forest_bush_feature");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SOUL_LIGHT_FEATURE = of("soul_light_feature");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> FALLEN_TREE_FEATURE = of("fallen_tree_feature");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> DEAD_CORAL_PATCH_FEATURE = of("dead_coral_patch_feature");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_01_STRIPPED = of("small_spruce_tree_stripped_01");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_01 = of("small_spruce_tree_01");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_02_STRIPPED = of("small_spruce_tree_stripped_02");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_02 = of("small_spruce_tree_02");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_03_STRIPPED = of("small_spruce_tree_stripped_03");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_03 = of("small_spruce_tree_03");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_04_STRIPPED = of("small_spruce_tree_stripped_04");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_04 = of("small_spruce_tree_04");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_05_STRIPPED = of("small_spruce_tree_stripped_05");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_05 = of("small_spruce_tree_05");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_06_STRIPPED = of("small_spruce_tree_stripped_06");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_SPRUCE_TREE_06 = of("small_spruce_tree_06");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_BENT_SPRUCE_TREE_01_STRIPPED = of("small_bent_spruce_tree_stripped_01");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> SMALL_BENT_SPRUCE_TREE_01 = of("small_bent_spruce_tree_01");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> FALLEN_SPRUCE_TREE_STRIPPED = of("fallen_spruce_stripped_tree");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> FALLEN_SPRUCE_TREE = of("fallen_spruce_tree");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPRUCE_TREE_01_STRIPPED = of("large_spruce_tree_stripped_01");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPRUCE_TREE_01 = of("large_spruce_tree_01");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPRUCE_TREE_02_STRIPPED = of("large_spruce_tree_stripped_02");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPRUCE_TREE_02 = of("large_spruce_tree_02");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPRUCE_TREE_03_STRIPPED = of("large_spruce_tree_stripped_03");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_SPRUCE_TREE_03 = of("large_spruce_tree_03");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_BENT_SPRUCE_TREE_01_STRIPPED = of("large_bent_spruce_tree_stripped_01");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_BENT_SPRUCE_TREE_01 = of("large_bent_spruce_tree_01");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_BENT_SPRUCE_TREE_02_STRIPPED = of("large_bent_spruce_tree_stripped_02");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> LARGE_BENT_SPRUCE_TREE_02 = of("large_bent_spruce_tree_02");
+
+    public static final RegistryKey<ConfiguredFeature<?, ?>> DEEP_DARK_OAK = of("deep_dark_oak");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> TG_PATCH_LARGE_FERN = of("tg_patch_large_fern_config");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> TG_PATCH_LEAVES = of("tg_patch_leaves_config");
+    public static final RegistryKey<ConfiguredFeature<?, ?>> TG_PATCH_MEADOW_FLOWER = of("tg_patch_meadow_flower_config");
+
+    public static <FC extends FeatureConfig, F extends Feature<FC>> ConfiguredFeature<FC, ?> configureFeature(F feature, FC config) {
+        return new ConfiguredFeature<>(feature, config);
     }
 
-    private static <C extends FeatureConfig, F extends Feature<C>> F registerFeature(String id, F feature) {
-        return Registry.register(Registry.FEATURE, new Identifier(TheGraveyardBiomes.MOD_ID, id), feature);
+    public static void populate(FabricDynamicRegistryProvider.Entries entries) {
+        entries.add(MOSS_CARPET_FEATURE, configureFeature(TGFeatures.MOSS_CARPET_FEATURE, FeatureConfig.DEFAULT));
+        entries.add(COBWEB_FEATURE, configureFeature(TGFeatures.COBWEB_FEATURE, FeatureConfig.DEFAULT));
+        entries.add(BUSH_FEATURE, configureFeature(TGFeatures.BUSH_FEATURE, FeatureConfig.DEFAULT));
+        entries.add(DEEP_DARK_FOREST_BUSH_FEATURE, configureFeature(TGFeatures.DEEP_DARK_FOREST_BUSH_FEATURE, FeatureConfig.DEFAULT));
+        entries.add(SOUL_LIGHT_FEATURE, configureFeature(TGFeatures.SOUL_LIGHT_FEATURE, FeatureConfig.DEFAULT));
+        entries.add(FALLEN_TREE_FEATURE, configureFeature(TGFeatures.FALLEN_TREE_FEATURE, FeatureConfig.DEFAULT));
+        entries.add(DEAD_CORAL_PATCH_FEATURE, configureFeature(TGFeatures.DEAD_CORAL_PATCH_FEATURE, FeatureConfig.DEFAULT));
+
+        entries.add(SMALL_SPRUCE_TREE_01_STRIPPED, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_01, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_02_STRIPPED, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_02, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_03_STRIPPED, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_03, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_04_STRIPPED, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_04, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_04, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_04, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_05_STRIPPED, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_05, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_05, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_05, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_06_STRIPPED, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_06, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_SPRUCE_TREE_06, configureFeature(TGFeatures.SMALL_SPRUCE_TREE_06, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_BENT_SPRUCE_TREE_01_STRIPPED, configureFeature(TGFeatures.SMALL_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(SMALL_BENT_SPRUCE_TREE_01, configureFeature(TGFeatures.SMALL_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(FALLEN_SPRUCE_TREE_STRIPPED, configureFeature(TGFeatures.FALLEN_SPRUCE_TREE, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(FALLEN_SPRUCE_TREE, configureFeature(TGFeatures.FALLEN_SPRUCE_TREE, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_SPRUCE_TREE_01_STRIPPED, configureFeature(TGFeatures.LARGE_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_SPRUCE_TREE_01, configureFeature(TGFeatures.LARGE_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_SPRUCE_TREE_02_STRIPPED, configureFeature(TGFeatures.LARGE_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_SPRUCE_TREE_02, configureFeature(TGFeatures.LARGE_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_SPRUCE_TREE_03_STRIPPED, configureFeature(TGFeatures.LARGE_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_SPRUCE_TREE_03, configureFeature(TGFeatures.LARGE_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_BENT_SPRUCE_TREE_01_STRIPPED, configureFeature(TGFeatures.LARGE_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_BENT_SPRUCE_TREE_01, configureFeature(TGFeatures.LARGE_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_BENT_SPRUCE_TREE_02_STRIPPED, configureFeature(TGFeatures.LARGE_BENT_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+        entries.add(LARGE_BENT_SPRUCE_TREE_02, configureFeature(TGFeatures.LARGE_BENT_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState())));
+
+        entries.add(DEEP_DARK_OAK, configureFeature(Feature.TREE, (new TreeFeatureConfig.Builder(BlockStateProvider.of(Blocks.DARK_OAK_LOG), new DeepDarkOakTrunkPlacer(13, 4, 2), BlockStateProvider.of(Blocks.DARK_OAK_LEAVES), new DarkOakFoliagePlacer(ConstantIntProvider.create(0), ConstantIntProvider.create(0)), new ThreeLayersFeatureSize(1, 1, 0, 1, 2, OptionalInt.empty()))).ignoreVines().build()));
+        entries.add(TG_PATCH_LARGE_FERN, configureFeature(Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(96, 7, 3, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.LARGE_FERN))))));
+        entries.add(TG_PATCH_LEAVES, configureFeature(Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(64, 6, 0, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.OAK_LEAVES.getDefaultState().with(Properties.PERSISTENT, true)))))));
+        entries.add(TG_PATCH_MEADOW_FLOWER, configureFeature(Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(96, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(new DualNoiseBlockStateProvider(new Range(1, 3), new DoublePerlinNoiseSampler.NoiseParameters(-10, 1.0D), 1.0F, 2345L, new DoublePerlinNoiseSampler.NoiseParameters(-3, 1.0D, new double[0]), 1.0F, List.of(Blocks.TALL_GRASS.getDefaultState(), Blocks.ALLIUM.getDefaultState(), Blocks.POPPY.getDefaultState(), Blocks.AZURE_BLUET.getDefaultState(), Blocks.DANDELION.getDefaultState(), Blocks.CORNFLOWER.getDefaultState(), Blocks.OXEYE_DAISY.getDefaultState(), Blocks.GRASS.getDefaultState())))))));
     }
+
+
+
+    /*
+    public static void bootstrap(Registerable<ConfiguredFeature<?, ?>> featureRegisterable) {
+        ConfiguredFeatures.register(featureRegisterable, MOSS_CARPET_FEATURE, TGFeatures.MOSS_CARPET_FEATURE, FeatureConfig.DEFAULT);
+        ConfiguredFeatures.register(featureRegisterable, COBWEB_FEATURE, TGFeatures.COBWEB_FEATURE, FeatureConfig.DEFAULT);
+        ConfiguredFeatures.register(featureRegisterable, BUSH_FEATURE, TGFeatures.BUSH_FEATURE, FeatureConfig.DEFAULT);
+        ConfiguredFeatures.register(featureRegisterable, DEEP_DARK_FOREST_BUSH_FEATURE, TGFeatures.DEEP_DARK_FOREST_BUSH_FEATURE, FeatureConfig.DEFAULT);
+        ConfiguredFeatures.register(featureRegisterable, SOUL_LIGHT_FEATURE, TGFeatures.SOUL_LIGHT_FEATURE, FeatureConfig.DEFAULT);
+        ConfiguredFeatures.register(featureRegisterable, FALLEN_TREE_FEATURE, TGFeatures.FALLEN_TREE_FEATURE, FeatureConfig.DEFAULT);
+        ConfiguredFeatures.register(featureRegisterable, DEAD_CORAL_PATCH_FEATURE, TGFeatures.DEAD_CORAL_PATCH_FEATURE, FeatureConfig.DEFAULT);
+
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_01_STRIPPED, TGFeatures.SMALL_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_01, TGFeatures.SMALL_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_02_STRIPPED, TGFeatures.SMALL_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_02, TGFeatures.SMALL_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_03_STRIPPED, TGFeatures.SMALL_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_03, TGFeatures.SMALL_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_04_STRIPPED, TGFeatures.SMALL_SPRUCE_TREE_04, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_04, TGFeatures.SMALL_SPRUCE_TREE_04, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_05_STRIPPED, TGFeatures.SMALL_SPRUCE_TREE_05, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_05, TGFeatures.SMALL_SPRUCE_TREE_05, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_06_STRIPPED, TGFeatures.SMALL_SPRUCE_TREE_06, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_SPRUCE_TREE_06, TGFeatures.SMALL_SPRUCE_TREE_06, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_BENT_SPRUCE_TREE_01_STRIPPED, TGFeatures.SMALL_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, SMALL_BENT_SPRUCE_TREE_01, TGFeatures.SMALL_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, FALLEN_SPRUCE_TREE_STRIPPED, TGFeatures.FALLEN_SPRUCE_TREE, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, FALLEN_SPRUCE_TREE, TGFeatures.FALLEN_SPRUCE_TREE, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_SPRUCE_TREE_01_STRIPPED, TGFeatures.LARGE_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_SPRUCE_TREE_01, TGFeatures.LARGE_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_SPRUCE_TREE_02_STRIPPED, TGFeatures.LARGE_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_SPRUCE_TREE_02, TGFeatures.LARGE_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_SPRUCE_TREE_03_STRIPPED, TGFeatures.LARGE_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_SPRUCE_TREE_03, TGFeatures.LARGE_SPRUCE_TREE_03, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_BENT_SPRUCE_TREE_01_STRIPPED, TGFeatures.LARGE_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_BENT_SPRUCE_TREE_01, TGFeatures.LARGE_BENT_SPRUCE_TREE_01, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_BENT_SPRUCE_TREE_02_STRIPPED, TGFeatures.LARGE_BENT_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.STRIPPED_SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+        ConfiguredFeatures.register(featureRegisterable, LARGE_BENT_SPRUCE_TREE_02, TGFeatures.LARGE_BENT_SPRUCE_TREE_02, new TGTreeFeatureConfig(Blocks.SPRUCE_LOG.getDefaultState(), Blocks.SPRUCE_LEAVES.getDefaultState()));
+
+        ConfiguredFeatures.register(featureRegisterable, DEEP_DARK_OAK, Feature.TREE, (new TreeFeatureConfig.Builder(BlockStateProvider.of(Blocks.DARK_OAK_LOG), new DeepDarkOakTrunkPlacer(13, 4, 2), BlockStateProvider.of(Blocks.DARK_OAK_LEAVES), new DarkOakFoliagePlacer(ConstantIntProvider.create(0), ConstantIntProvider.create(0)), new ThreeLayersFeatureSize(1, 1, 0, 1, 2, OptionalInt.empty()))).ignoreVines().build());
+        ConfiguredFeatures.register(featureRegisterable, TG_PATCH_LARGE_FERN, Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(96, 7, 3, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.LARGE_FERN)))));
+        ConfiguredFeatures.register(featureRegisterable, TG_PATCH_LEAVES, Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(64, 6, 0, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.OAK_LEAVES.getDefaultState().with(Properties.PERSISTENT, true))))));
+        ConfiguredFeatures.register(featureRegisterable, TG_PATCH_MEADOW_FLOWER, Feature.RANDOM_PATCH, new RandomPatchFeatureConfig(96, 6, 2, PlacedFeatures.createEntry(Feature.SIMPLE_BLOCK, new SimpleBlockFeatureConfig(new DualNoiseBlockStateProvider(new Range(1, 3), new DoublePerlinNoiseSampler.NoiseParameters(-10, 1.0D), 1.0F, 2345L, new DoublePerlinNoiseSampler.NoiseParameters(-3, 1.0D, new double[0]), 1.0F, List.of(Blocks.TALL_GRASS.getDefaultState(), Blocks.ALLIUM.getDefaultState(), Blocks.POPPY.getDefaultState(), Blocks.AZURE_BLUET.getDefaultState(), Blocks.DANDELION.getDefaultState(), Blocks.CORNFLOWER.getDefaultState(), Blocks.OXEYE_DAISY.getDefaultState(), Blocks.GRASS.getDefaultState()))))));
+
+        RegistryEntryLookup<PlacedFeature> registryEntryLookup = featureRegisterable.getRegistryLookup(RegistryKeys.PLACED_FEATURE);
+        RegistryEntryLookup<ConfiguredFeature<?, ?>> registryEntryLookup2 = featureRegisterable.getRegistryLookup(RegistryKeys.CONFIGURED_FEATURE);
+        ConfiguredFeatures.register(featureRegisterable, HAUNTED_FOREST_TREES, Feature.RANDOM_SELECTOR, new RandomFeatureConfig(List.of(
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_01), new PlacementModifier[0]), 0.25F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_02), new PlacementModifier[0]), 0.25F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_03), new PlacementModifier[0]), 0.375F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_04), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_05), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_06), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_BENT_SPRUCE_TREE_01), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(FALLEN_SPRUCE_TREE), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_01), new PlacementModifier[0]), 0.25F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_02), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_03), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_01_STRIPPED), new PlacementModifier[0]), 0.25F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_02_STRIPPED), new PlacementModifier[0]), 0.25F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_03_STRIPPED), new PlacementModifier[0]), 0.375F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_04_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_05_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_SPRUCE_TREE_06_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_BENT_SPRUCE_TREE_01_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(FALLEN_SPRUCE_TREE_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_01_STRIPPED), new PlacementModifier[0]), 0.25F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_02_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_03_STRIPPED), new PlacementModifier[0]), 0.1F)),
+                registryEntryLookup.getOrThrow(TreePlacedFeatures.SPRUCE_CHECKED)));
+
+        ConfiguredFeatures.register(featureRegisterable, ERODED_HAUNTED_FOREST_TREES, Feature.RANDOM_SELECTOR, new RandomFeatureConfig(List.of(
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_BENT_SPRUCE_TREE_01), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(FALLEN_SPRUCE_TREE), new PlacementModifier[0]), 0.0075F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_BENT_SPRUCE_TREE_01), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_BENT_SPRUCE_TREE_02), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_01), new PlacementModifier[0]), 0.5F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_02), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_03), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(SMALL_BENT_SPRUCE_TREE_01_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(FALLEN_SPRUCE_TREE_STRIPPED), new PlacementModifier[0]), 0.0075F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_BENT_SPRUCE_TREE_01_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_BENT_SPRUCE_TREE_02_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_01_STRIPPED), new PlacementModifier[0]), 0.5F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_02_STRIPPED), new PlacementModifier[0]), 0.1F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(LARGE_SPRUCE_TREE_03_STRIPPED), new PlacementModifier[0]), 0.1F)),
+                registryEntryLookup.getOrThrow(TreePlacedFeatures.SPRUCE_CHECKED)));
+
+        ConfiguredFeatures.register(featureRegisterable, ANCIENT_DEAD_REEF_VEGETATION, Feature.SIMPLE_RANDOM_SELECTOR, new SimpleRandomFeatureConfig(RegistryEntryList.of(
+                PlacedFeatures.createEntry(TGFeatures.DEAD_CORAL_TREE_FEATURE, FeatureConfig.DEFAULT, new PlacementModifier[0]),
+                PlacedFeatures.createEntry(TGFeatures.DEAD_CORAL_CLAW_FEATURE, FeatureConfig.DEFAULT, new PlacementModifier[0]),
+                PlacedFeatures.createEntry(TGFeatures.DEAD_CORAL_MUSHROOM_FEATURE, FeatureConfig.DEFAULT, new PlacementModifier[0]))));
+
+
+        ConfiguredFeatures.register(featureRegisterable, DEEP_DARK_FOREST_VEGETATION, Feature.RANDOM_SELECTOR, new RandomFeatureConfig(List.of(
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(TreeConfiguredFeatures.HUGE_BROWN_MUSHROOM), new PlacementModifier[0]), 0.025F),
+                new RandomFeatureEntry(PlacedFeatures.createEntry(registryEntryLookup2.getOrThrow(TreeConfiguredFeatures.HUGE_RED_MUSHROOM), new PlacementModifier[0]), 0.025F),
+                new RandomFeatureEntry(registryEntryLookup.getOrThrow(TGPlacedFeatures.DEEP_DARK_OAK), 0.8666667F),
+                new RandomFeatureEntry(registryEntryLookup.getOrThrow(TreePlacedFeatures.DARK_OAK_CHECKED), 0.1F)),
+                        registryEntryLookup.getOrThrow(TreePlacedFeatures.DARK_OAK_CHECKED)));
+    }
+
+     */
+
 
 }

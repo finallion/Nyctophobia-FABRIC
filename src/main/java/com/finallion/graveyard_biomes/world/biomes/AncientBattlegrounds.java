@@ -3,25 +3,28 @@ package com.finallion.graveyard_biomes.world.biomes;
 import com.finallion.graveyard_biomes.init.TGConfiguredFeatures;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
 import net.minecraft.world.gen.feature.OceanPlacedFeatures;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 
 public class AncientBattlegrounds {
 
-    public static Biome createAncientBattlegrounds() {
+    public static Biome createAncientBattlegrounds(RegistryEntryLookup<PlacedFeature> placedFeatures, RegistryEntryLookup<ConfiguredCarver<?>> configuredCarvers) {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         //DefaultBiomeFeatures.addOceanMobs(spawnSettings, 3, 4, 15);
         //spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnSettings.SpawnEntry(EntityType.SALMON, 15, 1, 5));
         //spawnSettings.spawn(SpawnGroup.WATER_AMBIENT, new SpawnSettings.SpawnEntry(EntityType.PUFFERFISH, 15, 1, 3));
         DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
 
-        GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
+        GenerationSettings.LookupBackedBuilder generationSettings = new GenerationSettings.LookupBackedBuilder(placedFeatures, configuredCarvers);
         DefaultBiomeFeatures.addLandCarvers(generationSettings);
         DefaultBiomeFeatures.addAmethystGeodes(generationSettings);
         DefaultBiomeFeatures.addDungeons(generationSettings);

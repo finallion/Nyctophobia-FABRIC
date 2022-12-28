@@ -4,12 +4,11 @@ import com.finallion.graveyard_biomes.util.TGTags;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.state.property.Properties;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
@@ -37,7 +36,7 @@ public class DeadCoralPatchFeature extends Feature<DefaultFeatureConfig> {
             mutable.setY(i);
             if (world.getBlockState(mutable).isSolidBlock(world, mutable) && world.getBlockState(mutable.up()).isAir() && world.getBiome(mutable).getKey().get().getValue().getPath().contains("ancient_dead_coral_reef")) {
                 if (random.nextInt(7) == 0) {
-                    Registry.BLOCK.getEntryList(TGTags.DEAD_CORALS).flatMap((blocks) -> {
+                    Registries.BLOCK.getEntryList(TGTags.DEAD_CORALS).flatMap((blocks) -> {
                         return blocks.getRandom(random);
                     }).map(RegistryEntry::value).ifPresent((block) -> {
                         world.setBlockState(mutable.up(), block.getDefaultState().with(Properties.WATERLOGGED, false), 2);
@@ -46,7 +45,7 @@ public class DeadCoralPatchFeature extends Feature<DefaultFeatureConfig> {
                 }
             } else if (world.getBlockState(mutable).isSolidBlock(world, mutable) && world.getBlockState(mutable.up()).isOf(Blocks.WATER) && world.getBiome(mutable).getKey().get().getValue().getPath().contains("ancient_dead_coral_reef")) {
                 if (random.nextBoolean()) {
-                    Registry.BLOCK.getEntryList(TGTags.DEAD_CORALS).flatMap((blocks) -> {
+                    Registries.BLOCK.getEntryList(TGTags.DEAD_CORALS).flatMap((blocks) -> {
                         return blocks.getRandom(random);
                     }).map(RegistryEntry::value).ifPresent((block) -> {
                         world.setBlockState(mutable.up(), block.getDefaultState().with(Properties.WATERLOGGED, true), 2);

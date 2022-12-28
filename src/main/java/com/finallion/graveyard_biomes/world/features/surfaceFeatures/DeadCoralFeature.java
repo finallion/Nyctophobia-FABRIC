@@ -6,13 +6,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DeadCoralWallFanBlock;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.state.property.Properties;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
@@ -32,7 +32,7 @@ public abstract class DeadCoralFeature extends Feature<DefaultFeatureConfig> {
         StructureWorldAccess structureWorldAccess = context.getWorld();
         BlockPos blockPos = context.getOrigin();
 
-        Optional<Block> optional = Registry.BLOCK.getEntryList(TGTags.DEAD_CORAL_BLOCKS).flatMap((blocks) -> {
+        Optional<Block> optional = Registries.BLOCK.getEntryList(TGTags.DEAD_CORAL_BLOCKS).flatMap((blocks) -> {
             return blocks.getRandom(random);
         }).map(RegistryEntry::value);
         return optional.isEmpty() ? false : this.generateCoral(structureWorldAccess, random, blockPos, ((Block)optional.get()).getDefaultState());
@@ -52,13 +52,13 @@ public abstract class DeadCoralFeature extends Feature<DefaultFeatureConfig> {
             if (random.nextFloat() < 0.25F) {
 
                 if (world.getBlockState(blockPos).isOf(Blocks.WATER)) {
-                    Registry.BLOCK.getEntryList(TGTags.DEAD_CORALS).flatMap((blocks) -> {
+                    Registries.BLOCK.getEntryList(TGTags.DEAD_CORALS).flatMap((blocks) -> {
                         return blocks.getRandom(random);
                     }).map(RegistryEntry::value).ifPresent((block) -> {
                         world.setBlockState(blockPos, block.getDefaultState().with(Properties.WATERLOGGED, true), 2);
                     });
                 } else if (world.getBlockState(blockPos).isOf(Blocks.AIR)) {
-                    Registry.BLOCK.getEntryList(TGTags.DEAD_CORALS).flatMap((blocks) -> {
+                    Registries.BLOCK.getEntryList(TGTags.DEAD_CORALS).flatMap((blocks) -> {
                         return blocks.getRandom(random);
                     }).map(RegistryEntry::value).ifPresent((block) -> {
                         world.setBlockState(blockPos, block.getDefaultState().with(Properties.WATERLOGGED, false), 2);
@@ -75,7 +75,7 @@ public abstract class DeadCoralFeature extends Feature<DefaultFeatureConfig> {
                 if (random.nextFloat() < 0.2F) {
                     BlockPos blockPos2 = pos.offset(direction);
                     if (world.getBlockState(blockPos2).isOf(Blocks.WATER)) {
-                        Registry.BLOCK.getEntryList(TGTags.DEAD_WALL_CORALS).flatMap((blocks) -> {
+                        Registries.BLOCK.getEntryList(TGTags.DEAD_WALL_CORALS).flatMap((blocks) -> {
                             return blocks.getRandom(random);
                         }).map(RegistryEntry::value).ifPresent((block) -> {
                             BlockState blockState2 = block.getDefaultState().with(Properties.WATERLOGGED, true);
@@ -86,7 +86,7 @@ public abstract class DeadCoralFeature extends Feature<DefaultFeatureConfig> {
                             world.setBlockState(blockPos2, blockState2, 2);
                         });
                     } else if (world.getBlockState(blockPos2).isOf(Blocks.AIR)) {
-                        Registry.BLOCK.getEntryList(TGTags.DEAD_WALL_CORALS).flatMap((blocks) -> {
+                        Registries.BLOCK.getEntryList(TGTags.DEAD_WALL_CORALS).flatMap((blocks) -> {
                             return blocks.getRandom(random);
                         }).map(RegistryEntry::value).ifPresent((block) -> {
                             BlockState blockState2 = block.getDefaultState().with(Properties.WATERLOGGED, false);

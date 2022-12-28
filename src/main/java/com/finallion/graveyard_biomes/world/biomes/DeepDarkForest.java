@@ -1,9 +1,12 @@
 package com.finallion.graveyard_biomes.world.biomes;
 
 import com.finallion.graveyard_biomes.init.TGConfiguredFeatures;
+import com.finallion.graveyard_biomes.init.TGPlacedFeatures;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.client.sound.MusicType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.SoundEvents;
@@ -13,12 +16,14 @@ import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
+import net.minecraft.world.gen.feature.PlacedFeature;
 
 
 public class DeepDarkForest {
 
-    public static Biome createDeepDarkForest() {
+    public static Biome createDeepDarkForest(FabricDynamicRegistryProvider.Entries entries) {
         SpawnSettings.Builder spawnSettings = new SpawnSettings.Builder();
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.FOX, 8, 2, 3));
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.SHEEP, 10, 3, 5));
@@ -26,12 +31,13 @@ public class DeepDarkForest {
         spawnSettings.spawn(SpawnGroup.CREATURE, new SpawnSettings.SpawnEntry(EntityType.PIG, 10, 3, 5));
         DefaultBiomeFeatures.addBatsAndMonsters(spawnSettings);
 
-        GenerationSettings.Builder generationSettings = new GenerationSettings.Builder();
+        GenerationSettings.LookupBackedBuilder generationSettings = new GenerationSettings.LookupBackedBuilder(entries.placedFeatures(), entries.configuredCarvers());
         addBasicFeatures(generationSettings);
         addTaigaFeatures(generationSettings);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.DEEP_DARK_FOREST_PLACED_VEGETATION);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.TG_PATCH_LARGE_FERN);
-        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, TGConfiguredFeatures.DEEP_DARK_FOREST_BUSH_PLACED_FEATURE);
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.DEEP_DARK_FOREST_VEGETATION_PLACED));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.TG_PATCH_LARGE_FERN));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.DEEP_DARK_FOREST_BUSH_FEATURE));
+        generationSettings.feature(GenerationStep.Feature.VEGETAL_DECORATION, entries.ref(TGPlacedFeatures.TG_PATCH_MEADOW_FLOWER));
 
         return (new Biome.Builder())
                 .precipitation(Biome.Precipitation.RAIN)
@@ -55,7 +61,7 @@ public class DeepDarkForest {
 
     }
 
-    private static void addBasicFeatures(GenerationSettings.Builder generationSettings) {
+    private static void addBasicFeatures(GenerationSettings.LookupBackedBuilder generationSettings) {
         DefaultBiomeFeatures.addLandCarvers(generationSettings);
         DefaultBiomeFeatures.addAmethystGeodes(generationSettings);
         DefaultBiomeFeatures.addDungeons(generationSettings);
@@ -64,13 +70,13 @@ public class DeepDarkForest {
         DefaultBiomeFeatures.addFrozenTopLayer(generationSettings);
     }
 
-    private static void addTaigaFeatures(GenerationSettings.Builder generationSettings) {
+    private static void addTaigaFeatures(GenerationSettings.LookupBackedBuilder generationSettings) {
         DefaultBiomeFeatures.addMossyRocks(generationSettings);
         DefaultBiomeFeatures.addLargeFerns(generationSettings);
-        DefaultBiomeFeatures.addPlainsTallGrass(generationSettings);
+        //DefaultBiomeFeatures.addPlainsTallGrass(generationSettings);
         DefaultBiomeFeatures.addDefaultOres(generationSettings);
         DefaultBiomeFeatures.addDefaultDisks(generationSettings);
-        DefaultBiomeFeatures.addMeadowFlowers(generationSettings);
+        //DefaultBiomeFeatures.addMeadowFlowers(generationSettings);
         DefaultBiomeFeatures.addGiantTaigaGrass(generationSettings);
         DefaultBiomeFeatures.addDefaultMushrooms(generationSettings);
         DefaultBiomeFeatures.addDefaultVegetation(generationSettings);
