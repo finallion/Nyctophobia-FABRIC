@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:swamp",
     "graveyard_biomes:haunted_lakes"
   ]
 }

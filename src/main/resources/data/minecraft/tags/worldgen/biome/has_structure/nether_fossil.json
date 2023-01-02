@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:soul_sand_valley",
     "graveyard_biomes:ancient_dead_coral_reef",
     "graveyard_biomes:eroded_haunted_forest"
   ]

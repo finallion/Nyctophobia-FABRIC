@@ -35,7 +35,7 @@
       "upper_size": 2
     },
     "trunk_placer": {
-      "type": "graveyard_biomes:deep_dark_oak_trunk_placer",
+      "type": "minecraft:deep_dark_oak_trunk_placer",
       "base_height": 13,
       "height_rand_a": 4,
       "height_rand_b": 2
