@@ -1,0 +1,19 @@
+{
+  "type": "nyctophobia:small_spruce_tree_01",
+  "config": {
+    "leaf_state": {
+      "Name": "minecraft:spruce_leaves",
+      "Properties": {
+        "distance": "1",
+        "persistent": "false",
+        "waterlogged": "false"
+      }
+    },
+    "wood_state": {
+      "Name": "minecraft:spruce_log",
+      "Properties": {
+        "axis": "y"
+      }
+    }
+  }
+}

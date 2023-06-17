@@ -1,7 +1,7 @@
 {
   "replace": false,
   "values": [
-    "graveyard_biomes:ancient_dead_coral_reef",
-    "graveyard_biomes:eroded_haunted_forest"
+    "nyctophobia:ancient_dead_coral_reef",
+    "nyctophobia:eroded_haunted_forest"
   ]
 }

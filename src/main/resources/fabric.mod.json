@@ -1,43 +1,43 @@
 {
   "schemaVersion": 1,
-  "id": "graveyard_biomes",
-  "version": "1.8",
+  "id": "nyctophobia",
+  "version": "1.9",
 
-  "name": "The Graveyard Biomes",
-  "description": "An independent spooky biome expansion mod for The Graveyard (FABRIC).",
+  "name": "Nyctophobia",
+  "description": "Spooky, foggy, creepy and dark biomes for your Minecraft world",
   "authors": [
     "Finallion"
   ],
   "contact": {
     "homepage": "",
-    "sources": "https://github.com/finallion/The_Graveyard_-FABRIC-"
+    "sources": ""
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/graveyard_biomes/graveyard_logo.png",
+  "icon": "assets/nyctophobia/graveyard_logo.png",
 
   "environment": "*",
   "entrypoints": {
     "fabric-datagen": [
-      "com.finallion.graveyard_biomes.data.TGDataGen"
+      "com.finallion.nyctophobia.data.NDataGen"
     ],
     "main": [
-      "com.finallion.graveyard_biomes.TheGraveyardBiomes"
+      "com.finallion.nyctophobia.Nyctophobia"
     ],
     "client": [],
     "terrablender": [
-      "com.finallion.graveyard_biomes.TheGraveyardBiomes"
+      "com.finallion.nyctophobia.Nyctophobia"
     ]
   },
   "mixins": [
-    "graveyard_biomes.mixins.json"
+    "nyctophobia.mixins.json"
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.11",
+    "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "minecraft": "1.19.x",
-    "terrablender": ">=2.1.0.132",
-    "java": ">=17"
+    "minecraft": "~1.20",
+    "java": ">=17",
+    "terrablender": ">=3.0.0.164"
   }
 }

@@ -1,10 +1,10 @@
 {
   "replace": false,
   "values": [
-    "graveyard_biomes:ancient_dead_coral_reef",
-    "graveyard_biomes:haunted_forest",
-    "graveyard_biomes:haunted_lakes",
-    "graveyard_biomes:eroded_haunted_forest",
-    "graveyard_biomes:deep_dark_forest"
+    "nyctophobia:ancient_dead_coral_reef",
+    "nyctophobia:haunted_forest",
+    "nyctophobia:haunted_lakes",
+    "nyctophobia:eroded_haunted_forest",
+    "nyctophobia:deep_dark_forest"
   ]
 }

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:random_selector",
+  "config": {
+    "default": "minecraft:dark_oak_checked",
+    "features": [
+      {
+        "chance": 0.025,
+        "feature": {
+          "feature": "minecraft:huge_brown_mushroom",
+          "placement": []
+        }
+      },
+      {
+        "chance": 0.025,
+        "feature": {
+          "feature": "minecraft:huge_red_mushroom",
+          "placement": []
+        }
+      },
+      {
+        "chance": 0.8666667,
+        "feature": "nyctophobia:deep_dark_oak"
+      },
+      {
+        "chance": 0.1,
+        "feature": "minecraft:dark_oak_checked"
+      }
+    ]
+  }
+}

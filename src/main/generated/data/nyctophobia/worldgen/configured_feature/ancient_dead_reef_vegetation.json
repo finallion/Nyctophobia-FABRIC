@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:simple_random_selector",
+  "config": {
+    "features": [
+      {
+        "feature": {
+          "type": "nyctophobia:dead_coral_tree_feature",
+          "config": {}
+        },
+        "placement": []
+      },
+      {
+        "feature": {
+          "type": "nyctophobia:dead_coral_claw_feature",
+          "config": {}
+        },
+        "placement": []
+      },
+      {
+        "feature": {
+          "type": "nyctophobia:dead_coral_mushroom_feature",
+          "config": {}
+        },
+        "placement": []
+      }
+    ]
+  }
+}
